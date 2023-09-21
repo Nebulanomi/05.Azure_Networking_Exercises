@@ -7,6 +7,14 @@ This set of Azure Networking labs are simplified to demonstrate a single concept
 ## Table of Lab Content
 
 #### [01. Virtual Network](https://github.com/binals/azurenetworking/blob/master/Lab%2001%20Virtual%20Network.pdf)
+
+Quick resume:
+
+1. Created a vnet (10.1.0.0/16).
+2. Created 2 subnets (10.1.1.0/24 & 10.1.2.0/24).
+3. Added a VM on each subnet.
+4. Installed Apache web server on the VM in subnet 2.
+
 #### [02. Network Security Groups](https://github.com/binals/azurenetworking/blob/master/Lab%2002%20Network%20Security%20Groups.pdf)
 #### [03. Azure CLI](https://github.com/binals/azurenetworking/blob/master/Lab%2003%20CLI.pdf)
 #### [04. Virtual Network Peering](https://github.com/binals/azurenetworking/blob/master/Lab%2004%20Virtual%20Network%20Peering.pdf)
