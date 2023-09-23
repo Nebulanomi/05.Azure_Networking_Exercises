@@ -84,7 +84,7 @@ Most labs build on each other so prior setup is expected.
             az network nsg create --name $NSG --resource-group $ResourceGroup --location $Location
             az network nsg rule create -g $ResourceGroup --nsg-name $NSG --name $NSGRuleName --direction inbound --destination-address-prefix $DestinationAddressPrefix --destination-port-range $DestinationPortRange --access allow --priority 100
     
-    4. Attached the NSG to the new Subnet:
+    4. Attached the NSG to the new Subnet.
     
         Variable:
         
@@ -94,7 +94,7 @@ Most labs build on each other so prior setup is expected.
         
             az network vnet subnet update -g $ResourceGroup -n $SubnetName --vnet-name $VnetName --network-security-group $NSG
 
-    5. Created a VM:
+    5. Created a VM.
 
         Variables:
 
@@ -107,7 +107,7 @@ Most labs build on each other so prior setup is expected.
 
             az vm create --resource-group $ResourceGroup --name $VmName --image UbuntuLTS --vnet-name $VnetName --subnet $SubnetName --admin-username $AdminUser --admin-password $AdminPassword
 
-    6. Listed the created subnet:
+    6. Listed the created subnet.
 
         az network vnet subnet list -g $ResourceGroup --vnet-name $VnetName -o table
 
