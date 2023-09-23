@@ -46,6 +46,8 @@ Most labs build on each other so prior setup is expected.
         Port: "80"; Protocol: "TCP"; Source: "Web"; Destination: "App"; Action: "Allow".
         Port: "Any"; Protocol: "Any"; Source: "Any"; Destination: "Any"; Action: "Deny".
 
+    10. Tested connectivity from my local computer to the VMs public & private IPs.
+
 #### [03. Azure CLI:](https://github.com/binals/azurenetworking/blob/master/Lab%2003%20CLI.pdf)
 
 #### [04. Virtual Network Peering:](https://github.com/binals/azurenetworking/blob/master/Lab%2004%20Virtual%20Network%20Peering.pdf)
