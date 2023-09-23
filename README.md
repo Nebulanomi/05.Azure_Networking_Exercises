@@ -22,25 +22,22 @@ Quick resume:
 1. Created a NSG (Network Security Group) and associated to each subnet.
 2. Removed the NSGs created with the VM NICs.
 3. Created an ASG (Application Security Group) for each VM ("Mgmt" & "Web").
-    Note: The ASGs have the same name as the VMs.
-
+Note: The ASGs have the same name as the VMs.
 4. Added the following inbound security rules to the NSG:
-    Port: "22", "3389"; Protocol: "TCP"; Source: "Any"; Destination: "Mgmt"; Action: "Allow".
-    Port: "80", "443"; Protocol: "TCP"; Source: "Any"; Destination: "Web"; Action: "Allow".
-
-    Note: Port "3389" was added so that I could connect to Windows VMs in case I added them in the future.
-
+Port: "22", "3389"; Protocol: "TCP"; Source: "Any"; Destination: "Mgmt"; Action: "Allow".
+Port: "80", "443"; Protocol: "TCP"; Source: "Any"; Destination: "Web"; Action: "Allow".
+Note: Port "3389" was added so that I could connect to Windows VMs in case I added them in the future.
 5. Tested connectivity from my local computer to the VMs public IPs.
 6. Created a new subnet (10.1.3.0/24) and associated it to the NSG.
 7. Created a VM on the new subnet ("App") and installed "Apache".
 8. Removed the NSGs created with the VM NIC.
 9. Added the follwing inbound security rules to the NSG:
-    Port: "Any"; Protocol: "ICMP"; Source: "Any"; Destination: "Mgmt", "Web"; Action: "Allow".
-    Port: "Any"; Protocol: "ICMP"; Source: "Web"; Destination: "App"; Action: "Allow".
-    Port: "Any"; Protocol: "ICMP"; Source: "Mgmt"; Destination: "App", "Web"; Action: "Allow".
-    Port: "22", "3389"; Protocol: "TCP"; Source: "Any"; Destination: "Mgmt"; Action: "Allow".
-    Port: "80"; Protocol: "TCP"; Source: "Web"; Destination: "App"; Action: "Allow".
-    Port: "Any"; Protocol: "Any"; Source: "Any"; Destination: "Any"; Action: "Deny".
+Port: "Any"; Protocol: "ICMP"; Source: "Any"; Destination: "Mgmt", "Web"; Action: "Allow".
+Port: "Any"; Protocol: "ICMP"; Source: "Web"; Destination: "App"; Action: "Allow".
+Port: "Any"; Protocol: "ICMP"; Source: "Mgmt"; Destination: "App", "Web"; Action: "Allow".
+Port: "22", "3389"; Protocol: "TCP"; Source: "Any"; Destination: "Mgmt"; Action: "Allow".
+Port: "80"; Protocol: "TCP"; Source: "Web"; Destination: "App"; Action: "Allow".
+Port: "Any"; Protocol: "Any"; Source: "Any"; Destination: "Any"; Action: "Deny".
 
 #### [03. Azure CLI](https://github.com/binals/azurenetworking/blob/master/Lab%2003%20CLI.pdf)
 #### [04. Virtual Network Peering](https://github.com/binals/azurenetworking/blob/master/Lab%2004%20Virtual%20Network%20Peering.pdf)
