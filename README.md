@@ -50,6 +50,73 @@ Most labs build on each other so prior setup is expected.
 
 #### [03. Azure CLI:](https://github.com/binals/azurenetworking/blob/master/Lab%2003%20CLI.pdf)
 
+    1. Entered Azure CLI (Bash Shell).
+        Note: Created a Storage account and File Share for it.
+
+    3. Created a vNET (10.0.0.0/16) & Subnet (10.0.1.0/24).
+
+       Variables:
+
+            ResourceGroup=Azure_Net_Lab_RG
+            VnetName=vnet-hub
+            VnetPrefix=10.0.0.0/16
+            SubnetName=Vnet-Hub-Subnet1
+            SubnetPrefix=10.0.1.0/24
+            Location=westeurope
+        
+        Creation:
+
+            az network vnet create -g $ResourceGroup -n $VnetName --address-prefix $VnetPrefix --subnet-name $SubnetName --subnet-prefix $SubnetPrefix -l $Location
+
+    4. Created a NSG and added an inbound security rule.
+
+        Variables:
+
+            ResourceGroup=Azure_Net_Lab_RG
+            NSG=NSG-Hub
+            NSGRuleName=Vnet-Hub-Allow-SSH
+            Location=westeurope
+            DestinationAddressPrefix=10.0.1.0/24
+            DestinationPortRange=22
+        
+        Creation:
+
+            az network nsg create --name $NSG --resource-group $ResourceGroup --location $Location
+            az network nsg rule create -g $ResourceGroup --nsg-name $NSG --name $NSGRuleName --direction inbound --destination-address-prefix $DestinationAddressPrefix --destination-port-range $DestinationPortRange --access allow --priority 100
+    5. Attacing the NSG to the new Subnet:
+    
+        Variable:
+        
+            NSG=NSG-Hub
+        
+        Creation:
+        
+            az network vnet subnet update -g $ResourceGroup -n $SubnetName --vnet-name $VnetName --network-security-group $NSG
+
+    6. Creating a VM:
+
+        Variables:
+
+            VmName=Vnet-Hub-VM1
+            SubnetName=Vnet-Hub-Subnet1
+            AdminUser=hubuser
+            AdminPassword=Azure123456!
+            
+        Creation:
+
+            az vm create --resource-group $ResourceGroup --name $VmName --image UbuntuLTS --vnet-name $VnetName --subnet $SubnetName --admin-username $AdminUser --admin-password $AdminPassword
+
+    7. List the created subnet:
+
+        az network vnet subnet list -g $ResourceGroup --vnet-name $VnetName -o table
+
+        AddressPrefix: 10.0.1.0/24
+        Name: Vnet-Hub-Subnet1
+        PrivateEndpointNetworkPolicies: Disabled
+        PrivateLinkServiceNetworkPolicies: Enabled
+        ProvisioningState: Succeeded
+        ResourceGroup: Azure_Net_Lab_RG
+
 #### [04. Virtual Network Peering:](https://github.com/binals/azurenetworking/blob/master/Lab%2004%20Virtual%20Network%20Peering.pdf)
 
 #### [05. Virtual Network Peering - Transitive behavior:](https://github.com/binals/azurenetworking/blob/master/Lab%2005%20Virtual%20Network%20Peering%20-%20Transitive%20behavior.pdf)
