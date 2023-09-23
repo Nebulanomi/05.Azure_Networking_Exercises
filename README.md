@@ -53,7 +53,7 @@ Most labs build on each other so prior setup is expected.
     1. Entered Azure CLI (Bash Shell).
         Note: Created a Storage account and File Share for it.
 
-    3. Created a vNET (10.0.0.0/16) & Subnet (10.0.1.0/24).
+    2. Created a vNET (10.0.0.0/16) & Subnet (10.0.1.0/24).
 
        Variables:
 
@@ -68,7 +68,7 @@ Most labs build on each other so prior setup is expected.
 
             az network vnet create -g $ResourceGroup -n $VnetName --address-prefix $VnetPrefix --subnet-name $SubnetName --subnet-prefix $SubnetPrefix -l $Location
 
-    4. Created a NSG and added an inbound security rule.
+    3. Created a NSG and added an inbound security rule.
 
         Variables:
 
@@ -83,7 +83,8 @@ Most labs build on each other so prior setup is expected.
 
             az network nsg create --name $NSG --resource-group $ResourceGroup --location $Location
             az network nsg rule create -g $ResourceGroup --nsg-name $NSG --name $NSGRuleName --direction inbound --destination-address-prefix $DestinationAddressPrefix --destination-port-range $DestinationPortRange --access allow --priority 100
-    5. Attacing the NSG to the new Subnet:
+    
+    4. Attached the NSG to the new Subnet:
     
         Variable:
         
@@ -93,7 +94,7 @@ Most labs build on each other so prior setup is expected.
         
             az network vnet subnet update -g $ResourceGroup -n $SubnetName --vnet-name $VnetName --network-security-group $NSG
 
-    6. Creating a VM:
+    5. Created a VM:
 
         Variables:
 
@@ -106,7 +107,7 @@ Most labs build on each other so prior setup is expected.
 
             az vm create --resource-group $ResourceGroup --name $VmName --image UbuntuLTS --vnet-name $VnetName --subnet $SubnetName --admin-username $AdminUser --admin-password $AdminPassword
 
-    7. List the created subnet:
+    6. Listed the created subnet:
 
         az network vnet subnet list -g $ResourceGroup --vnet-name $VnetName -o table
 
