@@ -2,7 +2,11 @@
 
 ## Introduction
 
-This set of Azure Networking labs are simplified to demonstrate a single concept in each lab, using Azure portal or Azure CLI. Each lab has a lab diagram that provides information on the lab setup. Most labs build on each other so prior setup is expected. Please use the lab diagram as guidance if you are doing a specific lab out of order.
+This set of Azure Networking labs are simplified to demonstrate a single concept in each lab, using Azure portal or Azure CLI.
+
+Each lab has a diagram that provides information on the lab setup.
+
+Most labs build on each other so prior setup is expected.
 
 ## Table of Lab Content
 
