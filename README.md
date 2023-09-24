@@ -64,7 +64,7 @@ Most labs build on each other so prior setup is expected.
             SubnetPrefix=10.0.1.0/24
             Location=westeurope
         
-        Creation:
+        Command:
 
             az network vnet create -g $ResourceGroup -n $VnetName --address-prefix $VnetPrefix --subnet-name $SubnetName --subnet-prefix $SubnetPrefix -l $Location
 
@@ -79,7 +79,7 @@ Most labs build on each other so prior setup is expected.
             DestinationAddressPrefix=10.0.1.0/24
             DestinationPortRange=22
         
-        Creation:
+        Commands:
 
             az network nsg create --name $NSG --resource-group $ResourceGroup --location $Location
             az network nsg rule create -g $ResourceGroup --nsg-name $NSG --name $NSGRuleName --direction inbound --destination-address-prefix $DestinationAddressPrefix --destination-port-range $DestinationPortRange --access allow --priority 100
@@ -90,7 +90,7 @@ Most labs build on each other so prior setup is expected.
         
             NSG=NSG-Hub
         
-        Creation:
+        Command:
         
             az network vnet subnet update -g $ResourceGroup -n $SubnetName --vnet-name $VnetName --network-security-group $NSG
 
@@ -101,9 +101,9 @@ Most labs build on each other so prior setup is expected.
             VmName=Vnet-Hub-VM1
             SubnetName=Vnet-Hub-Subnet1
             AdminUser=hubuser
-            AdminPassword=Azure123456!
+            AdminPassword="A secure password"
             
-        Creation:
+        Command:
 
             az vm create --resource-group $ResourceGroup --name $VmName --image UbuntuLTS --vnet-name $VnetName --subnet $SubnetName --admin-username $AdminUser --admin-password $AdminPassword
 
@@ -126,13 +126,62 @@ Most labs build on each other so prior setup is expected.
     4. Pinged the private IP of the VM in the "Hub" vNET.
     5. Pings didn't succeed.
     6. Created a Peer vNET in "Vnet1" (It automatically creates one on the remote vNET).
-    7. Allowed access and traffic between vNETs.
+    7. Allowed access and traffic forwarding between vNETs.
+        Note: Traffic forwarding only works if there is a Firewall or NVA on the Hub.
+
     8. Verified the "Effective Routes" on the NIC of each VM for "Peered vNET".
-    9. Accessed the "Mgmt" VM's with its public IP and pinged the "Hub" VM's private IP.
+    9. Accessed the "Mgmt" VM with its public IP and pinged the "Hub" VM's private IP.
         Note: The "AllowVnetInBound" is what allows communication between resources in connected vNETs.
         Note: If a new rule is created that disables that, we won't be able to ping.
 
 #### [05. Virtual Network Peering - Transitive behavior:](https://github.com/binals/azurenetworking/blob/master/Lab%2005%20Virtual%20Network%20Peering%20-%20Transitive%20behavior.pdf)
+
+    1. Acceced Azure CLI (Bash Shell).
+    2. Created a new vNET & Subnet.
+
+        Variables:
+
+            ResourceGroup=Azure_Net_Lab_RG
+            VnetName=Vnet2
+            VnetPrefix=10.2.0.0/16
+            SubnetName=Vnet2-Subnet1
+            SubnetPrefix=10.2.1.0/24
+            Location=westeurope
+
+        Command:
+
+            az network vnet create -g $ResourceGroup -n $VnetName --address-prefix $VnetPrefix --subnet-name $SubnetName --subnet-prefix $SubnetPrefix -l $Location
+
+    3. Attached the old NSG to the new Subnet (Bash Shell).
+
+        Variable:
+
+            NSG=NSG1
+
+        Command:
+            
+            az network vnet subnet update -g $ResourceGroup -n $SubnetName --vnet-name $VnetName --network-security-group $NSG
+
+    4. Created a new VM.
+
+        Variables:
+
+            VmName=Vnet2-VM1
+            SubnetName=Vnet2-Subnet1
+            AdminUser=azureuser
+            AdminPassword="A secure password"
+            
+        Command:
+        
+            az vm create --resource-group $ResourceGroup --name $VmName --image UbuntuLTS --vnet-name $VnetName --subnet $SubnetName --admin-username $AdminUser --admin-password $AdminPassword
+
+    5. Peered the new "Vnet2" vNET with the "Hub" vNET.
+    6. Allowed access and traffic forwarding between vNETs.
+    7. Verified the "Effective Routes" on the NIC of the new VM for "Peered vNET".
+    8. Altered the NSG to allow SSH to the new VMs public IP.
+    9. Accessed the "Vnet2" VM with its public IP and pinged the "Hub" VM's private IP.
+    10. Accessed the "Vnet2" VM with its public IP and could not ping the "Mgmt" VM's private IP.
+        Note: It doesnt work because transitive peering is not allowed.
 
 #### [06. NVA CSR1000v:](https://github.com/binals/azurenetworking/blob/master/Lab%2006%20NVA%20CSR1000v.pdf)
 
