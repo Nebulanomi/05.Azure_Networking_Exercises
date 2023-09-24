@@ -136,7 +136,7 @@ Most labs build on each other so prior setup is expected.
 
 #### [05. Virtual Network Peering - Transitive behavior:](https://github.com/binals/azurenetworking/blob/master/Lab%2005%20Virtual%20Network%20Peering%20-%20Transitive%20behavior.pdf)
 
-    1. Acceced Azure CLI (Bash Shell).
+    1. Accessed the Azure CLI (Bash Shell).
     2. Created a new vNET & Subnet.
 
         Variables:
@@ -184,6 +184,7 @@ Most labs build on each other so prior setup is expected.
         Note: It doesnt work because transitive peering is not allowed.
 
 #### [06. NVA CSR1000v:](https://github.com/binals/azurenetworking/blob/master/Lab%2006%20NVA%20CSR1000v.pdf)
+
 
 #### [07. Routing Tables:](https://github.com/binals/azurenetworking/blob/master/Lab%2007%20Routing%20Tables.pdf)
 
