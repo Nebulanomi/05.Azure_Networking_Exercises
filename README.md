@@ -120,6 +120,18 @@ Most labs build on each other so prior setup is expected.
 
 #### [04. Virtual Network Peering:](https://github.com/binals/azurenetworking/blob/master/Lab%2004%20Virtual%20Network%20Peering.pdf)
 
+    1. Checked connectivity between vNETs ("Hub" & "Vnet1").
+    2. Copied the public IPs of the VMs in the "Hub" vNET & "Mgmt" subnet.
+    3. Connected to the "Mgmt" VM with SSH.
+    4. Pinged the private IP of the VM in the "Hub" vNET.
+    5. Pings didn't succeed.
+    6. Created a Peer vNET in "Vnet1" (It automatically creates one on the remote vNET).
+    7. Allowed access and traffic between vNETs.
+    8. Verified the "Effective Routes" on the NIC of each VM for "Peered vNET".
+    9. Accessed the "Mgmt" VM's with its public IP and pinged the "Hub" VM's private IP.
+        Note: The "AllowVnetInBound" is what allows communication between resources in connected vNETs.
+        Note: If a new rule is created that disables that, we won't be able to ping.
+
 #### [05. Virtual Network Peering - Transitive behavior:](https://github.com/binals/azurenetworking/blob/master/Lab%2005%20Virtual%20Network%20Peering%20-%20Transitive%20behavior.pdf)
 
 #### [06. NVA CSR1000v:](https://github.com/binals/azurenetworking/blob/master/Lab%2006%20NVA%20CSR1000v.pdf)
