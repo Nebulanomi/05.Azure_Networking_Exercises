@@ -175,17 +175,18 @@ Most labs build on each other so prior setup is expected.
         
             az vm create --resource-group $ResourceGroup --name $VmName --image UbuntuLTS --vnet-name $VnetName --subnet $SubnetName --admin-username $AdminUser --admin-password $AdminPassword
 
-    5. Peered the new "Vnet2" vNET with the "Hub" vNET.
-    6. Allowed access and traffic forwarding between vNETs.
-    7. Verified the "Effective Routes" on the NIC of the new VM for "Peered vNET".
-    8. Altered the NSG to allow SSH to the new VMs public IP.
-    9. Accessed the "Vnet2" VM with its public IP and pinged the "Hub" VM's private IP.
-    10. Accessed the "Vnet2" VM with its public IP and could not ping the "Mgmt" VM's private IP.
+    5. Removed the NSG created from the VMs creation.
+    6. Peered the new "Vnet2" vNET with the "Hub" vNET.
+    7. Allowed access and traffic forwarding between vNETs.
+    8. Verified the "Effective Routes" on the NIC of the new VM for "Peered vNET".
+    9. Altered the NSG to allow SSH to the new VMs public IP.
+    10. Accessed the "Vnet2" VM with its public IP and pinged the "Hub" VM's private IP.
+    11. Accessed the "Vnet2" VM with its public IP and could not ping the "Mgmt" VM's private IP.
         Note: It doesnt work because transitive peering is not allowed.
 
 #### [06. NVA CSR1000v:](https://github.com/binals/azurenetworking/blob/master/Lab%2006%20NVA%20CSR1000v.pdf)
 
-    1. Deployed an NVA (Metwork Virtual Appliance) to "Vnet1".
+    1. Deployed a NVA (Metwork Virtual Appliance) to "Vnet1".
         Note: In this case I deployed the Cisco Cloud Services Router 1000V from the Azure Marketplace.
     
     2. Added it to a new Resource Group ("RG-Csr").
@@ -194,8 +195,21 @@ Most labs build on each other so prior setup is expected.
         Note: Since it is in "Vnet1-Subnet1", it receives its NSG.
         Note: It also created its own NSG (Csr1-SSH-SecurityGroup) which is attached to its 2 NICs.
 
-
 #### [07. Routing Tables:](https://github.com/binals/azurenetworking/blob/master/Lab%2007%20Routing%20Tables.pdf)
+
+    1. I will force the "Web" VM on "Vnet1-Subnet2" to route to "Csr1" when it wants to communicate with the IP range 10.0.1.0/24.
+    2.Created a route table and added it to a new Resource Group.
+    3. Created a route in it:
+        Address prefix: "10.0.1.0/24"; Next hop type: "VirtualAppliance"; Next hop IP address: "10.1.1.5" (The Routers private IP address on "Vnet1-Subnet1").
+    
+    4. Associated the route table to subnet "Vnet1-Subnet2".
+    5. Deleted the route tables created from the creation of the "Csr" VM.
+    6. Enabled IP forwarding on the NVAs NIC attached to "Vnet1-Subnet2".
+    7. Altered the NSG to allow ICMP to the new VM.
+    8. Accessed the "Web" VM with its public IP and pinged the "Csr1" & "Hub" VM's private IPs.
+    9. Did a traceroute from the "Web" VM to the "Hub" VM:
+        1  csr1.internal.cloudapp.net (10.1.1.5)  3.487 ms  3.458 ms  3.447 ms
+        2  10.0.1.4 (10.0.1.4)  4.466 ms *  4.443 ms
 
 #### [08. Site-to-site VPN:](https://github.com/binals/azurenetworking/blob/master/Lab%2008%20Site-to-site%20VPN.pdf)
 
