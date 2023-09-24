@@ -185,6 +185,15 @@ Most labs build on each other so prior setup is expected.
 
 #### [06. NVA CSR1000v:](https://github.com/binals/azurenetworking/blob/master/Lab%2006%20NVA%20CSR1000v.pdf)
 
+    1. Deployed an NVA (Metwork Virtual Appliance) to "Vnet1".
+        Note: In this case I deployed the Cisco Cloud Services Router 1000V from the Azure Marketplace.
+    
+    2. Added it to a new Resource Group ("RG-Csr").
+    3. Added 2 NICs to it, each one connected to each subnet in "Vnet1".
+    4. Accessed the new Router VM with its public IP.
+        Note: Since it is in "Vnet1-Subnet1", it receives its NSG.
+        Note: It also created its own NSG (Csr1-SSH-SecurityGroup) which is attached to its 2 NICs.
+
 
 #### [07. Routing Tables:](https://github.com/binals/azurenetworking/blob/master/Lab%2007%20Routing%20Tables.pdf)
 
