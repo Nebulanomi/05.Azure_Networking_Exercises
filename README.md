@@ -213,6 +213,61 @@ Most labs build on each other so prior setup is expected.
 
 #### [08. Site-to-site VPN:](https://github.com/binals/azurenetworking/blob/master/Lab%2008%20Site-to-site%20VPN.pdf)
 
+    1. A site to Site VPN is created between the "Hub" vNET & "Onprem" vNET with Azure CLI (Bash Shell).
+    2. Created the "OnPrem" vNET:
+
+        Variables:
+
+            ResourceGroup=RG-Lab
+            VnetName=OnPrem
+            VnetPrefix=10.128.0.0/16
+            SubnetName=OnPrem-Subnet1
+            SubnetPrefix=10.128.1.0/24
+            Location=westeurope
+
+        Command:
+
+            az network vnet create -g $ResourceGroup -n $VnetName --address-prefix $VnetPrefix --subnet-name $SubnetName --subnet-prefix $SubnetPrefix -l $Location
+
+    3. Created a Gateway Subnet in the "Hub" (10.0.254.0/27) & "OnPrem" vNET (10.128.254.0/27).
+        Note: A VPN GW needs to be deployed in a specific subnet named "GatewaySubnet".
+
+    4. Created a "Gen1" "Route-based" VNG (Virtual Network Gateway) in the "Hub" & "OnPrem" vNET.
+        Note: Active-Active mode is "disabled" & BGP is "enabled" with ASN as "65002".
+
+    5. Created a LNG (Local Network Gateway) with the "On-prem" address space & the details of the "OnPrem" VNG.
+        Note: LNG refers to the details of the local VNG including its IP address, BGP AASN & peering IP.
+        Note Address space refers to the local address range that we want to be reachable from the other VNG.
+
+    6. Created an LNG with the "Hub" address space & the details of the "Hub" VNG.
+    7. Added a VPN connection on the "Hub" GW:
+        Connection type: "Site-to-Site (IPsec)"; VNG: "Hub GW"; LNG: "OnPrem GW"; Shared key: "A secret key"; IKE protocol: "IKEv2"; 
+
+    8. Added a VPN connection on the "OnPrem" GW but with the "Onprem" VNG & the "Hub" LNG.
+    9. Verified that the connections are in the "Connected" status.
+    10. Created a VM on the "OnPrem" vNET with Azure CLI (Bash Shell).
+    
+        Variables:
+
+            ResourceGroup=RG-Lab
+            VmName=OnPrem-VM1
+            VnetName=OnPrem
+            SubnetName=OnPrem-Subnet1
+            AdminUser=azureuser
+            AdminPassword="A secure key"
+
+        Command:
+
+            az vm create --resource-group $ResourceGroup --name $VmName --image UbuntuLTS --vnet-name $VnetName --subnet $SubnetName --admin-username $AdminUser --admin-password $AdminPassword
+
+    11. Verified the VPN connections by accessing the "OnPrem" VM and connecting it to the VM on the "Hub" vNET.
+    12. Added a new prefix on the "Hub" LNG with a range that captures the "Vnet1" VMs private IP (10.1.0.0/16).
+    13. Connected to the "OnPrem" VM with its public IP and pinged the private IP address of the "Hub" & "Mgmt" VM.
+    14. Verified that only the "Hub" VM was reachable.
+    15. Enabled "Allow Gateway Transit" on the "Hub" vNET peering with the "Vnet1" vNET.
+    16. Enabled "Use Remote Gateways" on the "Vnet1" vNET peering with the "Hub" vNET.
+    17. Verified that both VMs were now reachable.
+
 #### [09. Virtual WAN:](https://github.com/binals/azurenetworking/blob/master/Lab%2009%20Virtual%20WAN.pdf)
 
 #### [10. Standard Load Balancer:](https://github.com/binals/azurenetworking/blob/master/Lab%2010%20Standard%20Load%20Balancer.pdf)
