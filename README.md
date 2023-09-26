@@ -115,13 +115,6 @@ Most labs build on each other so prior setup is expected.
 
 ![plot](./image.png)
 
-	AddressPrefix: 10.0.1.0/24
-            Name: Vnet-Hub-Subnet1
-            PrivateEndpointNetworkPolicies: Disabled
-            PrivateLinkServiceNetworkPolicies: Enabled
-            ProvisioningState: Succeeded
-            ResourceGroup: Azure_Net_Lab_RG
-
 #### [04. Virtual Network Peering:](https://github.com/binals/azurenetworking/blob/master/Lab%2004%20Virtual%20Network%20Peering.pdf)
 
     1. Checked connectivity between vNETs ("Hub" & "Vnet1").
