@@ -113,7 +113,7 @@ Most labs build on each other so prior setup is expected.
 
         az network vnet subnet list -g $ResourceGroup --vnet-name $VnetName -o table
 
-![plot](./image.png)
+![plot](./images/image.png)
 
 #### [04. Virtual Network Peering:](https://github.com/binals/azurenetworking/blob/master/Lab%2004%20Virtual%20Network%20Peering.pdf)
 
