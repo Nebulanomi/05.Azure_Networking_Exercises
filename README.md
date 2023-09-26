@@ -8,6 +8,8 @@ Each lab has a diagram that provides information on the lab setup.
 
 Most labs build on each other so prior setup is expected.
 
+	Note: Some alterations were made because the labs have some errors.
+
 ## Table of Lab Content
 
 #### [01. Virtual Network:](https://github.com/binals/azurenetworking/blob/master/Lab%2001%20Virtual%20Network.pdf)
@@ -111,12 +113,7 @@ Most labs build on each other so prior setup is expected.
 
         az network vnet subnet list -g $ResourceGroup --vnet-name $VnetName -o table
 
-            AddressPrefix: 10.0.1.0/24
-            Name: Vnet-Hub-Subnet1
-            PrivateEndpointNetworkPolicies: Disabled
-            PrivateLinkServiceNetworkPolicies: Enabled
-            ProvisioningState: Succeeded
-            ResourceGroup: Azure_Net_Lab_RG
+![plot](./images/image.png)
 
 #### [04. Virtual Network Peering:](https://github.com/binals/azurenetworking/blob/master/Lab%2004%20Virtual%20Network%20Peering.pdf)
 
