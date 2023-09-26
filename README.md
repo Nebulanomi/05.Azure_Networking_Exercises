@@ -270,6 +270,37 @@ Most labs build on each other so prior setup is expected.
 
 #### [09. Virtual WAN:](https://github.com/binals/azurenetworking/blob/master/Lab%2009%20Virtual%20WAN.pdf)
 
+    1. A "standard" virtual WAN is created in a new Resource Group.
+    2. A "Hub" router is created with the following information:
+        1. Basic: The lowest "Virtual Hub Capacity" (Which is 2 Units) and with a private address of 10.64.0.0/16.
+        2. Site-to-Site: Enabled and "Gateway scale units" to 1 scale.
+            Note: Two instances are deployed when a VPN gateway is provisioned in a virtual Hub. The Aggregate capacity is the bandiwdth of both put together.
+        
+    3. Created a "VPN site" on the virtual WAN that corresponds to the "OnPrem vNETs VNG":
+            Device vendor: "MSN"; Link speed: "50"; Link provider name: "MSN", Link IP address: "OnPrem NVGs Public IP"; Link BGP address: "OnPrem NVGs BGP address"; link ASN: "OnPrem NVGs ASN".
+
+    4. Verified that the "VPN site" has Hub with status "Connection Needed" because it hasnt been connected to the "Hub" that was created earlier.
+    5. Accessed the "Hub" router and connected the "VPN site" that was created:
+        PSK: "Secret key"; Protocol: "IPsec"; IPsec: "Default";
+        
+    6. Verified that the Connection Provisioning status equals "Succeeded" & Connectivity status equals "Not Connected".
+    7. Downloaded the "VPN config" on the "Hub" router which contains information of the "vWAM" and the "OnPrem VPN site".
+        Note: It creates a storage account in a new resource group.
+        
+    8. Created a LNG of the "Hub" vNET with information from the downloaded file.
+        IP address: "The vWANs Public IP"; Address space: "10.64.0.0/16"; BGP: "Enabled"; ASN: "65515"; BGP Peer ID address: "The vWANs BGP peer IP".
+        
+    9. Added a new "Connection" with the "OnPrem" VNG and the LNG of the "Hub" vWAN.
+        Note: PSK & IKE Protocol must be the same.
+        
+    10. Verified that the status of the connection changed to "Connected" on both sides.
+    11. Deleted everything related to the "Hub" GW and its connections to the "Vnet1" vNET from the previous lab.
+    12. Created a connection between the "vWAN Hub" and "Vnet1" in "Virtual Network Connections" and thats its connection is "Succeeded".
+    13. Verified that the "topology" of the vWAN is correct.
+    14. Verified the "Hub" status as "Succeeded" & shows "1 VPN site connected".
+    15. Verified that the "VPN site" has "Site Provisioning Status" as "Provisioned".
+
+
 #### [10. Standard Load Balancer:](https://github.com/binals/azurenetworking/blob/master/Lab%2010%20Standard%20Load%20Balancer.pdf)
 
 #### [11. Network Watcher NSG Flow Logs:](https://github.com/binals/azurenetworking/blob/master/Lab%2011%20Network%20Watcher%20NSG%20Flow%20Logs.pdf)
