@@ -8,7 +8,7 @@ Each lab has a diagram that provides information on the lab setup.
 
 Most labs build on each other so prior setup is expected.
 
-Some alterations were made because the labs have some errors.
+	Note: Some alterations were made because the labs have some errors.
 
 ## Table of Lab Content
 
