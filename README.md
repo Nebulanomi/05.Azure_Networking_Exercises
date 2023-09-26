@@ -8,6 +8,8 @@ Each lab has a diagram that provides information on the lab setup.
 
 Most labs build on each other so prior setup is expected.
 
+Some alterations were made because the labs have some errors.
+
 ## Table of Lab Content
 
 #### [01. Virtual Network:](https://github.com/binals/azurenetworking/blob/master/Lab%2001%20Virtual%20Network.pdf)
