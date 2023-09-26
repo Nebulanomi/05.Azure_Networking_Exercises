@@ -113,7 +113,7 @@ Most labs build on each other so prior setup is expected.
 
         az network vnet subnet list -g $ResourceGroup --vnet-name $VnetName -o table
 
-	![w](image.png)
+	![alt text](https://github.com/Nebulanomi/Azure_Networking_Labs/blob/master/image.png)
             AddressPrefix: 10.0.1.0/24
             Name: Vnet-Hub-Subnet1
             PrivateEndpointNetworkPolicies: Disabled
