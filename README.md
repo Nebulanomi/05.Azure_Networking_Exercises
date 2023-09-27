@@ -35,7 +35,7 @@ Most labs build on each other so prior setup is expected.
     6. Created a new subnet (10.1.3.0/24) and associated it to the NSG.
     7. Created a VM on the new subnet ("App") and installed "Apache".
     8. Removed the NSGs created with the VM NIC.
-    9. Added the follwing inbound security rules to the NSG:
+    9. Added the following inbound security rules to the NSG:
 
         Port: "Any"; Protocol: "ICMP"; Source: "Any"; Destination: "Mgmt", "Web"; Action: "Allow".
         Port: "Any"; Protocol: "ICMP"; Source: "Web"; Destination: "App"; Action: "Allow".
@@ -64,7 +64,13 @@ Most labs build on each other so prior setup is expected.
         
         Command:
 
-            az network vnet create -g $ResourceGroup -n $VnetName --address-prefix $VnetPrefix --subnet-name $SubnetName --subnet-prefix $SubnetPrefix -l $Location
+            az network vnet create \
+            -g $ResourceGroup \
+            -n $VnetName \
+            --address-prefix $VnetPrefix \
+            --subnet-name $SubnetName \
+            --subnet-prefix $SubnetPrefix \
+            -l $Location
 
     3. Created a NSG and added an inbound security rule.
 
@@ -79,8 +85,20 @@ Most labs build on each other so prior setup is expected.
         
         Commands:
 
-            az network nsg create --name $NSG --resource-group $ResourceGroup --location $Location
-            az network nsg rule create -g $ResourceGroup --nsg-name $NSG --name $NSGRuleName --direction inbound --destination-address-prefix $DestinationAddressPrefix --destination-port-range $DestinationPortRange --access allow --priority 100
+            az network nsg create \
+            --name $NSG \
+            --resource-group $ResourceGroup \
+            --location $Location
+            
+            az network nsg rule create \
+            -g $ResourceGroup \
+            --nsg-name $NSG \
+            --name $NSGRuleName \
+            --direction inbound \
+            --destination-address-prefix $DestinationAddressPrefix \
+            --destination-port-range $DestinationPortRange \
+            --access allow \
+            --priority 100
     
     4. Attached the NSG to the new Subnet.
     
@@ -90,7 +108,11 @@ Most labs build on each other so prior setup is expected.
         
         Command:
         
-            az network vnet subnet update -g $ResourceGroup -n $SubnetName --vnet-name $VnetName --network-security-group $NSG
+            az network vnet subnet update \
+            -g $ResourceGroup \
+            -n $SubnetName \
+            --vnet-name $VnetName \
+            --network-security-group $NSG
 
     5. Created a VM.
 
@@ -103,11 +125,21 @@ Most labs build on each other so prior setup is expected.
             
         Command:
 
-            az vm create --resource-group $ResourceGroup --name $VmName --image UbuntuLTS --vnet-name $VnetName --subnet $SubnetName --admin-username $AdminUser --admin-password $AdminPassword
+            az vm create \
+            --resource-group $ResourceGroup \
+            --name $VmName \
+            --image UbuntuLTS \
+            --vnet-name $VnetName \
+            --subnet $SubnetName \
+            --admin-username $AdminUser \
+            --admin-password $AdminPassword
 
     6. Listed the created subnet.
 
-        az network vnet subnet list -g $ResourceGroup --vnet-name $VnetName -o table
+        az network vnet subnet list \
+        -g $ResourceGroup \
+        --vnet-name $VnetName \
+        -o table
 
 ![plot](./images/image.png)
 
@@ -143,7 +175,13 @@ Most labs build on each other so prior setup is expected.
 
         Command:
 
-            az network vnet create -g $ResourceGroup -n $VnetName --address-prefix $VnetPrefix --subnet-name $SubnetName --subnet-prefix $SubnetPrefix -l $Location
+            az network vnet create \
+            -g $ResourceGroup \
+            -n $VnetName \
+            --address-prefix $VnetPrefix \
+            --subnet-name $SubnetName \
+            --subnet-prefix $SubnetPrefix \
+            -l $Location
 
     3. Attached the old NSG to the new Subnet (Bash Shell).
 
@@ -153,7 +191,11 @@ Most labs build on each other so prior setup is expected.
 
         Command:
             
-            az network vnet subnet update -g $ResourceGroup -n $SubnetName --vnet-name $VnetName --network-security-group $NSG
+            az network vnet subnet update \
+            -g $ResourceGroup \
+            -n $SubnetName \
+            --vnet-name $VnetName \
+            --network-security-group $NSG
 
     4. Created a new VM.
 
@@ -166,7 +208,14 @@ Most labs build on each other so prior setup is expected.
             
         Command:
         
-            az vm create --resource-group $ResourceGroup --name $VmName --image UbuntuLTS --vnet-name $VnetName --subnet $SubnetName --admin-username $AdminUser --admin-password $AdminPassword
+            az vm create \
+            --resource-group $ResourceGroup \
+            --name $VmName \
+            --image UbuntuLTS \
+            --vnet-name $VnetName \
+            --subnet $SubnetName \
+            --admin-username $AdminUser \
+            --admin-password $AdminPassword
 
     5. Removed the NSG created from the VMs creation.
     6. Peered the new "Vnet2" vNET with the "Hub" vNET.
@@ -191,7 +240,7 @@ Most labs build on each other so prior setup is expected.
 #### [07. Routing Tables:](https://github.com/binals/azurenetworking/blob/master/Lab%2007%20Routing%20Tables.pdf)
 
     1. I will force the "Web" VM on "Vnet1-Subnet2" to route to "Csr1" when it wants to communicate with the IP range 10.0.1.0/24.
-    2.Created a route table and added it to a new Resource Group.
+    2. Created a route table and added it to a new Resource Group.
     3. Created a route in it:
         Address prefix: "10.0.1.0/24"; Next hop type: "VirtualAppliance"; Next hop IP address: "10.1.1.5" (The Routers private IP address on "Vnet1-Subnet1").
     
@@ -220,7 +269,13 @@ Most labs build on each other so prior setup is expected.
 
         Command:
 
-            az network vnet create -g $ResourceGroup -n $VnetName --address-prefix $VnetPrefix --subnet-name $SubnetName --subnet-prefix $SubnetPrefix -l $Location
+            az network vnet create \
+            -g $ResourceGroup \
+            -n $VnetName \
+            --address-prefix $VnetPrefix \
+            --subnet-name $SubnetName \
+            --subnet-prefix $SubnetPrefix \
+            -l $Location
 
     3. Created a Gateway Subnet in the "Hub" (10.0.254.0/27) & "OnPrem" vNET (10.128.254.0/27).
         Note: A VPN GW needs to be deployed in a specific subnet named "GatewaySubnet".
@@ -251,7 +306,14 @@ Most labs build on each other so prior setup is expected.
 
         Command:
 
-            az vm create --resource-group $ResourceGroup --name $VmName --image UbuntuLTS --vnet-name $VnetName --subnet $SubnetName --admin-username $AdminUser --admin-password $AdminPassword
+            az vm create \
+            --resource-group $ResourceGroup \
+            --name $VmName \
+            --image UbuntuLTS \
+            --vnet-name $VnetName \
+            --subnet $SubnetName \
+            --admin-username $AdminUser \
+            --admin-password $AdminPassword
 
     11. Verified the VPN connections by accessing the "OnPrem" VM and connecting it to the VM on the "Hub" vNET.
     12. Added a new prefix on the "Hub" LNG with a range that captures the "Vnet1" VMs private IP (10.1.0.0/16).
@@ -350,7 +412,9 @@ Most labs build on each other so prior setup is expected.
     4. Created a new "Log Analytics Workspace".
 
     3. Accessed Network Watcher and created a "NSG flow log" for "NSG1".
-        Resource: NSG1; Storage Account: "The one created earlier"; Retention: "2"; Flow Logs Version: 1; Traffic Analytics: "Enabled"; Traffic Analytics processing interval: "Every 10 mins"; Log Analytics Workspace: "The one created earlier".
+        Resource: NSG1; Storage Account: "The one created earlier"; Retention: "2"; Flow Logs Version: 1;
+        Traffic Analytics: "Enabled"; Traffic Analytics processing interval: "Every 10 mins"; Log Analytics Workspace: "The one created earlier".
+        
         Note: Version 1 logs ingress and egress IP traffic flows for both allowed and denied traffic.
         Note: Traffic Analytics provides rich analytics and visualization derived from flow logs.
 
@@ -378,28 +442,28 @@ Most labs build on each other so prior setup is expected.
         
         Example of a flowTuples information:
 
-        1542110377: The time stamp of when the flow occurred, in UNIX EPOCH format.
-            Note: This converts to May 1, 2018 at 2:59:05 PM GMT. 
-        
-        10.0.0.4: The source IP address that the flow originated from.
-        13.67.143.118: The destination IP address that the flow was destined to.
-        44931: The source port that the flow originated from.
-        443: The destination port that the flow was destined to.
-            Note: If the port matches a rule then it will show as the one that processed it.
+            1542110377: The time stamp of when the flow occurred, in UNIX EPOCH format.
+                Note: This converts to May 1, 2018 at 2:59:05 PM GMT. 
             
-        T: Whether the protocol of the flow was TCP (T) or UDP (U).
-        O: Whether the traffic was inbound (I) or outbound (O).
-        A: Whether the traffic was allowed (A) or denied (D).
-        C: Captures the state of the flow.
-            Note: Possible states are:
+            10.0.0.4: The source IP address that the flow originated from.
+            13.67.143.118: The destination IP address that the flow was destined to.
+            44931: The source port that the flow originated from.
+            443: The destination port that the flow was destined to.
+                Note: If the port matches a rule then it will show as the one that processed it.
+                
+            T: Whether the protocol of the flow was TCP (T) or UDP (U).
+            O: Whether the traffic was inbound (I) or outbound (O).
+            A: Whether the traffic was allowed (A) or denied (D).
+            C: Captures the state of the flow.
+                Note: Possible states are:
 
-                B - When a flow is created (Statistics aren't provided).
-                C - Continuing for an ongoing flow (Statistics are provided at 5-minute intervals).
-                E - When a flow is terminated (Statistics are provided). 
-        
-        30 Packets sent: The total number of TCP or UDP packets sent from source to destination since last update (Or vice-versa). 
-        16978 Bytes sent: The total number of TCP or UDP packet bytes sent from source to destination since last update (Or vice-versa).
-            Note: Packet bytes include the packet header and payload.
+                    B - When a flow is created (Statistics aren't provided).
+                    C - Continuing for an ongoing flow (Statistics are provided at 5-minute intervals).
+                    E - When a flow is terminated (Statistics are provided). 
+            
+            30 Packets sent: The total number of TCP or UDP packets sent from source to destination since last update (Or vice-versa). 
+            16978 Bytes sent: The total number of TCP or UDP packet bytes sent from source to destination since last update (Or vice-versa).
+                Note: Packet bytes include the packet header and payload.
 
 #### [12. Firewall:](https://github.com/binals/azurenetworking/blob/master/Lab%2012%20Firewall.pdf)
 
