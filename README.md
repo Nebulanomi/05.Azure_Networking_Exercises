@@ -339,8 +339,67 @@ Most labs build on each other so prior setup is expected.
         
         11. Verified that "Web1" appears when connecting to the LBs public IP & "Web2" after shutting down "Web1" VM.
 
-
 #### [11. Network Watcher NSG Flow Logs:](https://github.com/binals/azurenetworking/blob/master/Lab%2011%20Network%20Watcher%20NSG%20Flow%20Logs.pdf)
+
+    1. Accessed Network Watcher in the search box and verified that there was one from the previous exercises.
+        Note: Network Watcher is created in its own Resource Group "NetworkWatcherRG" when a vNET is created and therefore it is also registered in the subscription by default.
+
+    2. Created a "Standard" Azure Storage account.
+        Note: NSG flow log needs it to write data.
+
+    4. Created a new "Log Analytics Workspace".
+
+    3. Accessed Network Watcher and created a "NSG flow log" for "NSG1".
+        Resource: NSG1; Storage Account: "The one created earlier"; Retention: "2"; Flow Logs Version: 1; Traffic Analytics: "Enabled"; Traffic Analytics processing interval: "Every 10 mins"; Log Analytics Workspace: "The one created earlier".
+        Note: Version 1 logs ingress and egress IP traffic flows for both allowed and denied traffic.
+        Note: Traffic Analytics provides rich analytics and visualization derived from flow logs.
+
+    3. Accessed Network Watcher and created a "NSG flow log" for "NSG-Hub".
+        Note: Configured with the same information as as "NSG1" but with the different Resource.
+    
+    4. Accessed the "NSG flow logs" in Network Watcher.
+    5. Clicked on the "Storage Account" connected to both.
+    6. Went to "Containers" and accessed the "networksecuritygroupflowevent" container.
+    7. Navigated through the hierarchy until the "PT1H.json" file is found.
+        Note (Naming convention):
+            
+            https://{storageAccountName}.blob.core.windows.net /  
+            insights-logs-networksecuritygroupflowevent / 
+            resourceId= / SUBSCRIPTIONS / {SubscriptionID} / 
+            RESOURCEGROUPS / {ResourceGroupName} / 
+            PROVIDERS / MICROSOFT.NETWORK / 
+            NETWORKSECURITYGROUPS / {NSGName} / 
+            y={Year} / m={Month} / d={Day} / h={Hour} / m={Minute} / 
+            macAddress={MACAddress} /
+            PT1H.json
+
+    8. Downloaded the file and verified the "flow log" in it.
+        Note: The MAC addresses shown are VM NICs.
+        
+        Example of a flowTuples information:
+
+        1542110377: The time stamp of when the flow occurred, in UNIX EPOCH format.
+            Note: This converts to May 1, 2018 at 2:59:05 PM GMT. 
+        
+        10.0.0.4: The source IP address that the flow originated from.
+        13.67.143.118: The destination IP address that the flow was destined to.
+        44931: The source port that the flow originated from.
+        443: The destination port that the flow was destined to.
+            Note: If the port matches a rule then it will show as the one that processed it.
+            
+        T: Whether the protocol of the flow was TCP (T) or UDP (U).
+        O: Whether the traffic was inbound (I) or outbound (O).
+        A: Whether the traffic was allowed (A) or denied (D).
+        C: Captures the state of the flow.
+            Note: Possible states are:
+
+                B - When a flow is created (Statistics aren't provided).
+                C - Continuing for an ongoing flow (Statistics are provided at 5-minute intervals).
+                E - When a flow is terminated (Statistics are provided). 
+        
+        30 Packets sent: The total number of TCP or UDP packets sent from source to destination since last update (Or vice-versa). 
+        16978 Bytes sent: The total number of TCP or UDP packet bytes sent from source to destination since last update (Or vice-versa).
+            Note: Packet bytes include the packet header and payload.
 
 #### [12. Firewall:](https://github.com/binals/azurenetworking/blob/master/Lab%2012%20Firewall.pdf)
 
