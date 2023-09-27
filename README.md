@@ -14,16 +14,12 @@ Most labs build on each other so prior setup is expected.
 
 #### [01. Virtual Network:](https://github.com/binals/azurenetworking/blob/master/Lab%2001%20Virtual%20Network.pdf)
 
-    Quick resume:
-
     1. Created a vNET (10.1.0.0/16).
     2. Created 2 subnets (10.1.1.0/24 & 10.1.2.0/24).
     3. Added a VM on each subnet ("Mgmt" & "Web").
     4. Installed "Apache" on the "Web" VM in subnet 2.
 
 #### [02. Network Security Groups:](https://github.com/binals/azurenetworking/blob/master/Lab%2002%20Network%20Security%20Groups.pdf)
-
-    Quick resume:
 
     1. Created a NSG (Network Security Group) and associated to each subnet.
     2. Removed the NSGs created with the VM NICs.
@@ -297,8 +293,52 @@ Most labs build on each other so prior setup is expected.
     14. Verified the "Hub" status as "Succeeded" & shows "1 VPN site connected".
     15. Verified that the "VPN site" has "Site Provisioning Status" as "Provisioned".
 
-
 #### [10. Standard Load Balancer:](https://github.com/binals/azurenetworking/blob/master/Lab%2010%20Standard%20Load%20Balancer.pdf)
+
+
+
+    2. The backend for the LB includes 2 Web VMs on the vNET "Vnet1".
+    3. A "Web2" VM was created in the same location as "Web1" and with the same "web" ASG in Azure CLI (Baash Shell).
+
+        Variables:
+
+            ResourceGroup=Azure_Net_Lab_RG
+            VmName=Vnet1-VM-Web2
+            VnetName=Vnet1
+            SubnetName=Vnet1-Subnet2
+            Admin=azureuser
+            Password="A secure password"
+
+        Command:
+        
+            az vm create --resource-group $ResourceGroup \
+            --name $VmName \
+            --image UbuntuLTS \
+            --vnet-name $VnetName \
+            --subnet $SubnetName \
+            --nsg "" \
+            --asgs Web \
+            --public-ip-address "" \
+            --admin-username $Admin \
+            --admin-password $Password
+
+        4. Connected to the "Mgmt" VM with its public IP and accessed the "Web1" VM.
+        5. Elevated to root and installed apache and wrote HTML text to the index.html file.
+            echo '<!doctype html><html><body><h1>Web Server 1</h1></body></html>' | tee /var/www/html/index.html
+
+        6. Connected to the "Web2" VM with its private IP and did the same as "Web1".
+            echo '<!doctype html><html><body><h1>Web Server 2</h1></body></html>' | tee /var/www/html/index.html
+
+        7. A "standard" LB (Load Balancer) is configured on vNET "Vnet1".
+            Note: It is a Layer 4 LB (Balances TCP & UDP traffic).
+        
+        8. Public IP address was created for the Frontend.
+        9. A backend pool was added with both "Web" VMs.
+        10. A Load Balancing Rule was added that is connected to the Frontend IP and Backend pool.
+            Note: In it a health probe was added to monitor the status of port "80" and protocol "HTTP".
+        
+        11. Verified that "Web1" appears when connecting to the LBs public IP & "Web2" after shutting down "Web1" VM.
+
 
 #### [11. Network Watcher NSG Flow Logs:](https://github.com/binals/azurenetworking/blob/master/Lab%2011%20Network%20Watcher%20NSG%20Flow%20Logs.pdf)
 
