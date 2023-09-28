@@ -692,4 +692,23 @@ Most labs build on each other so prior setup is expected.
 
 #### [Lab 15 Private Link - Private endpoint:](https://github.com/Nebulanomi/Azure_Networking_Labs/blob/master/01.%20Azure%20Networking%20Labs/Private%20Link%20-%20Private%20endpoint.md)
 
-    
+    1. Created a "standard" "LRS" storage account.
+        Note: Left the rest as default.
+
+    3. Created a "Hub" vNET for the Private Endpoint to reside in (10.0.0.0/16) & a subnet for it (10.0.1.0/24).
+    2. Created a Private Endpoint:
+
+        Name: "pe-sa1"; Network Interface Name: "pe-sa1-nic";
+        Connection method: "Connect to an Azure resource in my directory"; Resource type: "Microsoft.Storage/storageAccounts"; Resource: "The name of the storage account"; Target sub-resource: "blob";
+        Virtual network: "The Hub vNET"; Subnet: "The Hub Subnet";
+        Integrate with private DNS zone: "Yes"; Resource group: "Our resource group";
+
+    4. Accessed the Private Endpoint and verified that it had a NIC associated to it in the "DNS configuration".
+        Note: I also verified that the private IP address is associated to the FQDN of the storage account.
+
+    5. Accessed the Private DNS zone & verified that the "Hub" vNET was linked with the Private DNS Zone.
+    6. Created a VM in the same subnet without a "Public IP" & accessed it through the "Serial Console".
+    7. Verified that the Private Endpoints IP address appeared after doing an "nslookup" with the Storage Accounts FQDN.
+        Note: This shows that the VM was forced to go to the Private Endpoint to reach the Storage Account.
+
+    8. Verified that by doing the same on my local computer that it went directly to the Storage Accounts public IP.
