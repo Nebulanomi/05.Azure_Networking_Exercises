@@ -8,7 +8,7 @@ Each lab has a diagram that provides information on the lab setup.
 
 Most labs build on each other so prior setup is expected.
 
-	Note: Some alterations were made because the labs have some errors.
+	Note: Some alterations were made on on my lab completion because there are some errors in the files.
 
 ## Table of Lab Content
 
@@ -142,7 +142,7 @@ Most labs build on each other so prior setup is expected.
         --vnet-name $VnetName \
         -o table
 
-![plot](./images/image.png)
+![plot](./04.Images/image.png)
 
 #### [04. Virtual Network Peering:](https://github.com/binals/azurenetworking/blob/master/Lab%2004%20Virtual%20Network%20Peering.pdf)
 
@@ -541,7 +541,7 @@ Most labs build on each other so prior setup is expected.
 
         az network vnet list -o table
 
-![plot](./images/image2.png)
+![plot](./04.Images/image2.png)
 
     4. Peered "vNET2" with the "Hub" vNET:
 
@@ -636,7 +636,7 @@ Most labs build on each other so prior setup is expected.
             --vnet-name $VnetName \
             -o table
 
-![plot](./images/image3.png)
+![plot](./04.Images/image3.png)
 
     8. Added a NSG to "vNET2".
 
