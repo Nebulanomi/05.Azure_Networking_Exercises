@@ -389,10 +389,12 @@ Most labs build on each other so prior setup is expected.
             --admin-password $Password
 
         4. Connected to the "Mgmt" VM with its public IP and accessed the "Web1" VM.
-        5. Elevated to root and installed apache and wrote HTML text to the index.html file.
+        5. Elevated to root and installed apache and wrote HTML text to the index.html file:
+
             echo '<!doctype html><html><body><h1>Web Server 1</h1></body></html>' | tee /var/www/html/index.html
 
-        6. Connected to the "Web2" VM with its private IP and did the same as "Web1".
+        6. Connected to the "Web2" VM with its private IP and did the same as "Web1":
+
             echo '<!doctype html><html><body><h1>Web Server 2</h1></body></html>' | tee /var/www/html/index.html
 
         7. A "standard" LB (Load Balancer) is configured on vNET "Vnet1".
@@ -479,15 +481,15 @@ Most labs build on each other so prior setup is expected.
 
     2. Accessed "Firewalls" in the search box and created one:
 
-        Resource group: "The same as the virtual network".
+        Resource group: "The same as the virtual network";
         Firewall SKU: "Standard"; Firewall SKU: "Premium";
-        Virtual Network: "Vnet-Hub"; Public IP: "A new one with Standard SKU";
+        Virtual Network: "Vnet-Hub"; Public IP: "A new one with Standard SKU".
 
     3. Created an application rule in the Firewall in "Application rule collection" (Layer 7):
         Note: that allows outbound access to "www.microsoft.com".
 
         Priority: "200"; Action: "Allow"; Target FQDN source: 10.1.2.0/24;
-        Protocol:Port: "http, https"; Target FQDN: "www.microsoft.com";
+        Protocol:Port: "http, https"; Target FQDN: "www.microsoft.com".
 
     4. Created a route table in the same region as the Firewall.
     5. Created a custom route:
@@ -512,3 +514,178 @@ Most labs build on each other so prior setup is expected.
     2. Verified that SSH was possible with the Firewalls public IP and port "8022".
 
 #### [14. Firewall - Spoke to spoke communication:](https://github.com/binals/azurenetworking/blob/master/Lab%2014%20Firewall%20-%20Spoke%20to%20spoke%20communication.pdf)
+
+    1. Deleted the previous "vNET2" and everything in it.
+    2. Created "vNET2" again with Azure CLI (Bash Shell).
+
+        Variables:
+
+            ResourceGroup=Virtual_Network        
+            VnetName=vnet2
+            VnetPrefix=10.2.0.0/16
+            SubnetName=vnet2-subnet1
+            SubnetPrefix=10.2.1.0/24
+            Location=westeurope
+
+        Command:
+        
+            az network vnet create \
+            -g $ResourceGroup \
+            -n $VnetName \
+            --address-prefix $VnetPrefix \
+            --subnet-name $SubnetName \
+            --subnet-prefix $SubnetPrefix \
+            -l $Location
+
+    3. Verified that "vNET2" was created:
+
+        az network vnet list -o table
+
+![plot](./images/image2.png)
+
+    4. Peered "vNET2" with the "Hub" vNET:
+
+        Variables:
+
+            ResourceGroup=Virtual_Network
+            PeeringName=peer-vnet2-vnet-hub 
+            VnetName=vnet2 
+            RemoteVnet=vnet-hub 
+ 
+        Command:
+        
+            az network vnet peering create \
+            --name $PeeringName \
+            --remote-vnet $RemoteVnet \
+            --resource-group $ResourceGroup \
+            --vnet-name $VnetName \
+            --allow-forwarded-traffic \
+            --allow-vnet-access
+    
+    5. Peered the "Hub" vNET with "vNET2":
+
+        Variables:
+
+            ResourceGroup=Virtual_Network
+            PeeringName=peer-vnethub-to-vnet2   
+            VnetName=vnet-hub
+            RemoteVnet=vNET2   
+ 
+        Command:
+
+            az network vnet peering create \
+            --name $PeeringName \
+            --remote-vnet $RemoteVnet \
+            --resource-group $ResourceGroup \
+            --vnet-name $VnetName \
+            --allow-forwarded-traffic \
+            --allow-vnet-access
+
+    6. Made "Allow Forwarded traffic" enabled for "vNET1" peering:
+
+        Variables:
+
+            ResourceGroup=Virtual_Network
+            PeeringName=vnet1-to-hub
+            VnetName=vnet1  
+ 
+        Command:
+
+            az network vnet peering update \
+            -n $PeeringName \
+            -g $ResourceGroup \
+            --vnet-name $VnetName \
+            --set allowForwardedTraffic=true            
+
+        Variables:
+        
+            PeeringName=hub-to-vnet1  
+            VnetName=vnet-hub
+
+        Command:
+        
+            az network vnet peering update \
+            -n $PeeringName \
+            -g $ResourceGroup \
+            --vnet-name $VnetName \
+            --set allowForwardedTraffic=true
+
+    7. Verified peering status between "vNET2" & the "Hub" vnet:
+
+        Variables:
+
+            VnetName=vnet1
+            ResourceGroup=Virtual_Network
+
+        Command:
+        
+            az network vnet peering list \
+            -g $ResourceGroup \
+            --vnet-name $VnetName \
+            -o table
+
+        Variables:
+        
+            VnetName=vnet2
+            ResourceGroup=Virtual_Network
+
+        Command:
+        
+            az network vnet peering list \
+            -g $ResourceGroup \
+            --vnet-name $VnetName \
+            -o table
+
+![plot](./images/image3.png)
+
+    8. Added a NSG to "vNET2".
+
+        Variables:
+
+            Nsg=nsg-hub 
+            SubnetName=vnet2-subnet1
+            VnetName=vnet2
+            ResourceGroup=Virtual_Network
+
+        Command:
+
+            az network vnet subnet update \
+            -g $ResourceGroup \
+            -n $SubnetName \
+            --vnet-name $VnetName \
+            --network-security-group $Nsg 
+
+    8. Added a VM to "vNET2".
+
+        Variables:
+
+            ResourceGroup=Virtual_Network
+            VmName=vnet2-vm1
+            SubnetName=vnet2-subnet1
+            VnetName=vnet2
+            AdminUser=azureuser
+            AdminPassword=Azure123456!
+
+        Command:
+
+            az vm create \
+            --resource-group $ResourceGroup \
+            --name $VmName \
+            --image UbuntuLTS \
+            --vnet-name $VnetName \
+            --subnet $SubnetName \
+            --admin-username $AdminUser \
+            --admin-password $AdminPassword \
+            --nsg "" 
+ 
+    9. Associated the route table from "vNET1-subnet1" with "vNET2-subnet1".
+        Note: This will allow both of them to have a default route to the Firewall.
+
+    10. Added a "Network Rule Collection" to the firewall to allow ICMP traffic between the vNETs:
+
+        Name: "Allow-ICMP"; Priority: "200"; Action: "Allow";
+        IP Addresses:Name: "Allow-ICMP"; Protocol: "ICMP"; Source Addresses: "10.0.0.0/8";
+        Destination addresses: "10.0.0.0/8"; Destination Ports: "*".
+
+    11. Accessed the "Mgmt" VM and pinged the new VM on "vNET2".
+    12. Pinged successfuly between them.
