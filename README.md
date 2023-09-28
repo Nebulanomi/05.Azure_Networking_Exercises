@@ -496,7 +496,8 @@ Most labs build on each other so prior setup is expected.
         Next hop type: "Virtual appliance"; Next hop address: "The Firewalls private IP address".
 
     6. Associated the custom route to the spoke "Vnet1" vNET & subnet "Vnet1-Subnet2".
-    7. Accessed the "Mgmt" VM through the "Serial Console" and verified that "wget www.microsoft.com" was working.
+    7. Accessed the "Mgmt" VM through the "Serial Console" and verified that "curl www.microsoft.com" was working.
+    10. Did "curl www.google.com" and it didnt work, giving a firewall error.
         Note: Verified that the vNETs are still peered to each other and that "Vnet1" isnt using "Remote GW".
 
 #### [13. Firewall-Inbound NAT:](https://github.com/binals/azurenetworking/blob/master/Lab%2013%20Firewall%20-%20Inbound%20NAT.pdf)
@@ -508,6 +509,6 @@ Most labs build on each other so prior setup is expected.
         Rules:Source Addresses: *; Rules:Destination Addresses: "Firewalls public IP";
         Rules:Destination ports: "8022"; Translated Address: "Mgmt VMs private IP"; Rules:Translated port: "22".
 
-    2. Verifies that SSH was possible with the Firewalls public IP and port "8022".
+    2. Verified that SSH was possible with the Firewalls public IP and port "8022".
 
 #### [14. Firewall - Spoke to spoke communication:](https://github.com/binals/azurenetworking/blob/master/Lab%2014%20Firewall%20-%20Spoke%20to%20spoke%20communication.pdf)
