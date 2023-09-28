@@ -14,7 +14,7 @@ To create a private endpoint for your storage:
 	2. From there, click on 'Create private endpoint'.
 	3. Provide the name and region for the private endpoint.
 
- ![Create private endpoint](./04.%20Images/image-pl-pename.png)
+![plot](./04.%20Images/image-pl-pename.png)
 
 On the next Resources tab, select the resource type as Microsoft.Storage/storageAccounts.
 An easier way is to  search for 'storage' in this field and it will show you the option in the dropdown.
