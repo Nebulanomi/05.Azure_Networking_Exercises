@@ -1,12 +1,14 @@
 ## Azure Private Link\: Private Endpoint - Access your PaaS services privately
 
-Azure Private Link enables you to access your Azure PaaS resources privately.
-It enables you to create a private endpoint for your service.
-This private endpoint is a network interface created in your virtual network that gets an IP address from the virtual network range.
-When a resource from this virtual network, or connected to this virtual network, accesses the service, the service resolves to this private IP of the resource, making the communication completely private. 
+	Azure Private Link enables you to access your Azure PaaS resources privately.
+	It enables you to create a private endpoint for your service.
+	This private endpoint is a network interface created in your virtual network that gets an IP address from the virtual network range.
+	When a resource from this virtual network, or connected to this virtual network, accesses the service, the service resolves to this private IP of the resource, making the communication completely private. 
 
 The lab below walks you through the steps to create a private endpoint to an existing storage account.
+
 You can replicate these steps for any supported PaaS services that you have deployed.
+
 The lab assumes you have a storage account pre-created.
 
 To create a private endpoint for your storage:
