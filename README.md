@@ -689,3 +689,7 @@ Most labs build on each other so prior setup is expected.
 
     11. Accessed the "Mgmt" VM and pinged the new VM on "vNET2".
     12. Pinged successfuly between them.
+
+#### [Lab 15 Private Link - Private endpoint:](https://github.com/Nebulanomi/Azure_Networking_Labs/blob/master/01.%20Azure%20Networking%20Labs/Private%20Link%20-%20Private%20endpoint.md)
+
+    
