@@ -418,7 +418,7 @@ Most labs build on each other so prior setup is expected.
     4. Created a new "Log Analytics Workspace".
 
     3. Accessed Network Watcher and created a "NSG flow log" for "NSG1":
-    
+
         Resource: NSG1; Storage Account: "The one created earlier"; Retention: "2"; Flow Logs Version: 1;
         Traffic Analytics: "Enabled"; Traffic Analytics processing interval: "Every 10 mins"; Log Analytics Workspace: "The one created earlier".
         
@@ -474,6 +474,40 @@ Most labs build on each other so prior setup is expected.
 
 #### [12. Firewall:](https://github.com/binals/azurenetworking/blob/master/Lab%2012%20Firewall.pdf)
 
+    1. Created a subnet for the Firewall in "vnet-hub" (10.0.251.0/24).
+            Note: Azure Firewall requires a dedicated subnet called "AzureFirewallSubnet".
+
+    2. Accessed "Firewalls" in the search box and created one:
+
+        Resource group: "The same as the virtual network".
+        Firewall SKU: "Standard"; Firewall SKU: "Premium";
+        Virtual Network: "Vnet-Hub"; Public IP: "A new one with Standard SKU";
+
+    3. Created an application rule in the Firewall in "Application rule collection" (Layer 7):
+        Note: that allows outbound access to "www.microsoft.com".
+
+        Priority: "200"; Action: "Allow"; Target FQDN source: 10.1.2.0/24;
+        Protocol:Port: "http, https"; Target FQDN: "www.microsoft.com";
+
+    4. Created a route table in the same region as the Firewall.
+    5. Created a custom route:
+
+        Destination type: "IP Addresses"; Destination IP addresses: "0.0.0.0/0";
+        Next hop type: "Virtual appliance"; Next hop address: "The Firewalls private IP address".
+
+    6. Associated the custom route to the spoke "Vnet1" vNET & subnet "Vnet1-Subnet2".
+    7. Accessed the "Mgmt" VM through the "Serial Console" and verified that "wget www.microsoft.com" was working.
+        Note: Verified that the vNETs are still peered to each other and that "Vnet1" isnt using "Remote GW".
+
 #### [13. Firewall-Inbound NAT:](https://github.com/binals/azurenetworking/blob/master/Lab%2013%20Firewall%20-%20Inbound%20NAT.pdf)
+
+    1. Accessed the Firewall and added a "NAT rule collection" to allow SSH thorugh the Firewall to the "Mgmt" VM:
+
+        Name: "InboundNAT"; Priority: "200";
+        Rules:Name: "NatRule1"; Rules:Protocol: "TCP";
+        Rules:Source Addresses: *; Rules:Destination Addresses: "Firewalls public IP";
+        Rules:Destination ports: "8022"; Translated Address: "Mgmt VMs private IP"; Rules:Translated port: "22".
+
+    2. Verifies that SSH was possible with the Firewalls public IP and port "8022".
 
 #### [14. Firewall - Spoke to spoke communication:](https://github.com/binals/azurenetworking/blob/master/Lab%2014%20Firewall%20-%20Spoke%20to%20spoke%20communication.pdf)
