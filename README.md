@@ -329,8 +329,8 @@ Most labs build on each other so prior setup is expected.
 
 #### [09. Virtual WAN:](https://github.com/binals/azurenetworking/blob/master/Lab%2009%20Virtual%20WAN.pdf)
 
-    1. A "standard" virtual WAN is created in a new Resource Group.
-    2. A "Hub" router is created with the following information:
+    1. A "standard" virtual WAN service is created in a new Resource Group.
+    2. In it I created a virtual Hub (vnet) is created with the following information:
         1. Basic: The lowest "Virtual Hub Capacity" (Which is 2 Units) and with a private address of 10.64.0.0/16.
         2. Site-to-Site: Enabled and "Gateway scale units" to 1 scale.
             Note: Two instances are deployed when a VPN gateway is provisioned in a virtual Hub. The Aggregate capacity is the bandiwdth of both put together.
@@ -340,7 +340,7 @@ Most labs build on each other so prior setup is expected.
             Device vendor: "MSN"; Link speed: "50"; Link provider name: "MSN", Link IP address: "OnPrem NVGs Public IP"; Link BGP address: "OnPrem NVGs BGP address"; link ASN: "OnPrem NVGs ASN".
 
     4. Verified that the "VPN site" has Hub with status "Connection Needed" because it hasnt been connected to the "Hub" that was created earlier.
-    5. Accessed the "Hub" router and connected the "VPN site" that was created:
+    5. Accessed the "Hub" VPN GW and connected the "VPN site" that was created:
 
         PSK: "Secret key"; Protocol: "IPsec"; IPsec: "Default";
         
@@ -352,19 +352,48 @@ Most labs build on each other so prior setup is expected.
 
         IP address: "The vWANs Public IP"; Address space: "10.64.0.0/16"; BGP: "Enabled"; ASN: "65515"; BGP Peer ID address: "The vWANs BGP peer IP".
         
-    9. Added a new "Connection" with the "OnPrem" VNG and the LNG of the "Hub" vWAN.
-        Note: PSK & IKE Protocol must be the same.
+    9. Added a new "Site-to-Site" Connection with the "OnPrem" VNG and the LNG of the "Hub" vWAN.
+        Note: PSK & IKE Protocol must be the same & BGP peer enabled.
         
     10. Verified that the status of the connection changed to "Connected" on both sides.
     11. Deleted everything related to the "Hub" GW and its connections to the "Vnet1" vNET from the previous lab.
-    12. Created a connection between the "vWAN Hub" and "Vnet1" in "Virtual Network Connections" and thats its connection is "Succeeded".
-    13. Verified that the "topology" of the vWAN is correct.
-    14. Verified the "Hub" status as "Succeeded" & shows "1 VPN site connected".
-    15. Verified that the "VPN site" has "Site Provisioning Status" as "Provisioned".
+    12. Created a connection between the "vWAN Hub" and "Vnet1" in "Virtual Network Connections" with everything as default.
+    13. Verified that the connection is "Succeeded".
+    14. Verified that the "topology" of the vWAN is correct.
+    15. Verified the "Hub" status as "Succeeded" & shows "1 VPN site connected".
+    16. Verified that the "VPN site" has "Site Provisioning Status" as "Provisioned".
+    17. Verified that pinging from the "On-Prem" VM to the private IP of the "Mgmt" Vm was successful.
+    18. Created a new "Branch2" vnet with IP range 10.129.0.0/16 and subnet 10.129.1.0/24.
+    19. Created a "Gateway subnet" with IP range 10.129.0.0/24.
+    20. Created a VPN GW:
+
+        Gateway type: "VPN"; VPN type: "Route-based"; SKU: "VpnGW1"; Generation: "Generation1"; virtual network: "Branch2";
+        Public IP address: "Create new";
+        Enable active-active mode: "Disabled";
+        Configure BGP: "Enabled";
+        ASN: "65003";
+    
+    21. Added a new virtual WAN "Hub2" Hub in another region with IP range 10.65.0.0/16.
+    22. Created a new VPN GW in in the new Hub.
+    23. Created a new "VPN Site":
+
+        Device vendor: "MSN"; Link speed: "50"; Link provider name: "MSN", Link IP address: "Branch NVGs Public IP"; Link BGP address: "Branch NVGs BGP address"; link ASN: "Branch NVGs ASN".
+
+    24. Connected the VPN site to the new Hub:
+
+        PSK: "Secret key"; Protocol: "IPsec"; IPsec: "Default";
+
+    25. Downloaded the configuration and added the necessary information to a new "Local Network Gateway":
+
+        IP address: "The vWANs Public IP"; Address Space: "10.65.0.0/16" BGP: "Enabled"; ASN: "65515"; BGP Peer ID address: "The vWANs BGP peer IP".
+
+    26. Configured a Site-to-Site connection on the Branch2 VPN GW with the LNG to the new Hub.
+    27. Verified that connection was established.
+    28. Created a VM in the Branch2 vnet and successfuly pinged the VM on the vnet and onprem.
 
 #### [10. Standard Load Balancer:](https://github.com/binals/azurenetworking/blob/master/Lab%2010%20Standard%20Load%20Balancer.pdf)
 
-    3. A "Web2" VM was created in the same location as "Web1" and with the same "web" ASG in Azure CLI (Baash Shell).
+    1. A "Web2" VM was created in the same location as "Web1" and with the same "web" ASG in Azure CLI (Baash Shell).
 
         Variables:
 
@@ -388,26 +417,26 @@ Most labs build on each other so prior setup is expected.
             --admin-username $Admin \
             --admin-password $Password
 
-        4. Connected to the "Mgmt" VM with its public IP and accessed the "Web1" VM.
-        5. Elevated to root and installed apache and wrote HTML text to the index.html file:
+    2. Connected to the "Mgmt" VM with its public IP and accessed the "Web1" VM.
+    3. Elevated to root and installed apache and wrote HTML text to the index.html file:
 
-            echo '<!doctype html><html><body><h1>Web Server 1</h1></body></html>' | tee /var/www/html/index.html
+        echo '<!doctype html><html><body><h1>Web Server 1</h1></body></html>' | tee /var/www/html/index.html
 
-        6. Connected to the "Web2" VM with its private IP and did the same as "Web1":
+    4. Connected to the "Web2" VM with its private IP and did the same as "Web1":
 
-            echo '<!doctype html><html><body><h1>Web Server 2</h1></body></html>' | tee /var/www/html/index.html
+        echo '<!doctype html><html><body><h1>Web Server 2</h1></body></html>' | tee /var/www/html/index.html
 
-        7. A "standard" LB (Load Balancer) is configured on vNET "Vnet1".
-            Note: It is a Layer 4 LB (Balances TCP & UDP traffic).
+    5. A "standard" LB (Load Balancer) is configured on vNET "Vnet1".
+        Note: It is a Layer 4 LB (Balances TCP & UDP traffic).
         
-        8. Public IP address was created for the Frontend.
-        9. A backend pool was added with both "Web" VMs.
-            Note: The backend for the LB includes the 2 Web VMs on the vNET "Vnet1".
+    6. Public IP address was created for the Frontend.
+    7. A backend pool was added with both "Web" VMs.
+        Note: The backend for the LB includes the 2 Web VMs on the vNET "Vnet1".
 
-        10. A Load Balancing Rule was added and is connected to the Frontend IP and Backend pool.
-            Note: In it a health probe was added to monitor the status of port "80" and protocol "HTTP".
+    8. A Load Balancing Rule was added and is connected to the Frontend IP and Backend pool.
+        Note: In it a health probe was added to monitor the status of port "80" and protocol "HTTP".
         
-        11. Verified that "Web1" appears when connecting to the LBs public IP & "Web2" after shutting down "Web1" VM.
+    9. Verified that "Web1" appears when connecting to the LBs public IP & "Web2" after shutting down "Web1" VM.
 
 #### [11. Network Watcher NSG Flow Logs:](https://github.com/binals/azurenetworking/blob/master/Lab%2011%20Network%20Watcher%20NSG%20Flow%20Logs.pdf)
 
@@ -417,9 +446,8 @@ Most labs build on each other so prior setup is expected.
     2. Created a "Standard" Azure Storage account.
         Note: NSG flow log needs it to write data.
 
-    4. Created a new "Log Analytics Workspace".
-
-    3. Accessed Network Watcher and created a "NSG flow log" for "NSG1":
+    3. Created a new "Log Analytics Workspace".
+    4. Accessed Network Watcher and created a "NSG flow log" for "NSG1":
 
         Resource: NSG1; Storage Account: "The one created earlier"; Retention: "2"; Flow Logs Version: 1;
         Traffic Analytics: "Enabled"; Traffic Analytics processing interval: "Every 10 mins"; Log Analytics Workspace: "The one created earlier".
@@ -427,13 +455,13 @@ Most labs build on each other so prior setup is expected.
         Note: Version 1 logs ingress and egress IP traffic flows for both allowed and denied traffic.
         Note: Traffic Analytics provides rich analytics and visualization derived from flow logs.
 
-    3. Accessed Network Watcher and created a "NSG flow log" for "NSG-Hub".
+    5. Accessed Network Watcher and created a "NSG flow log" for "NSG-Hub".
         Note: Configured with the same information as as "NSG1" but with the different Resource.
     
-    4. Accessed the "NSG flow logs" in Network Watcher.
-    5. Clicked on the "Storage Account" connected to both.
-    6. Went to "Containers" and accessed the "networksecuritygroupflowevent" container.
-    7. Navigated through the hierarchy until the "PT1H.json" file is found.
+    6. Accessed the "NSG flow logs" in Network Watcher.
+    7. Clicked on the "Storage Account" connected to both.
+    8. Went to "Containers" and accessed the "networksecuritygroupflowevent" container.
+    9. Navigated through the hierarchy until the "PT1H.json" file is found.
         Note (Naming convention):
             
             https://{storageAccountName}.blob.core.windows.net /  
@@ -446,7 +474,7 @@ Most labs build on each other so prior setup is expected.
             macAddress={MACAddress} /
             PT1H.json
 
-    8. Downloaded the file and verified the "flow log" in it.
+    10. Downloaded the file and verified the "flow log" in it.
         Note: The MAC addresses shown are VM NICs.
         
         Example of a flowTuples information:
@@ -499,7 +527,7 @@ Most labs build on each other so prior setup is expected.
 
     6. Associated the custom route to the spoke "Vnet1" vNET & subnet "Vnet1-Subnet2".
     7. Accessed the "Mgmt" VM through the "Serial Console" and verified that "curl www.microsoft.com" was working.
-    10. Did "curl www.google.com" and it didnt work, giving a firewall error.
+    8. Did "curl www.google.com" and it didnt work, giving a firewall error.
         Note: Verified that the vNETs are still peered to each other and that "Vnet1" isnt using "Remote GW".
 
 #### [13. Firewall-Inbound NAT:](https://github.com/binals/azurenetworking/blob/master/Lab%2013%20Firewall%20-%20Inbound%20NAT.pdf)
@@ -655,7 +683,7 @@ Most labs build on each other so prior setup is expected.
             --vnet-name $VnetName \
             --network-security-group $Nsg 
 
-    8. Added a VM to "vNET2".
+    9. Added a VM to "vNET2".
 
         Variables:
 
@@ -678,25 +706,25 @@ Most labs build on each other so prior setup is expected.
             --admin-password $AdminPassword \
             --nsg "" 
  
-    9. Associated the route table from "vNET1-subnet1" with "vNET2-subnet1".
+    10. Associated the route table from "vNET1-subnet1" with "vNET2-subnet1".
         Note: This will allow both of them to have a default route to the Firewall.
 
-    10. Added a "Network Rule Collection" to the firewall to allow ICMP traffic between the vNETs:
+    11. Added a "Network Rule Collection" to the firewall to allow ICMP traffic between the vNETs:
 
         Name: "Allow-ICMP"; Priority: "200"; Action: "Allow";
         IP Addresses:Name: "Allow-ICMP"; Protocol: "ICMP"; Source Addresses: "10.0.0.0/8";
         Destination addresses: "10.0.0.0/8"; Destination Ports: "*".
 
-    11. Accessed the "Mgmt" VM and pinged the new VM on "vNET2".
-    12. Pinged successfuly between them.
+    12. Accessed the "Mgmt" VM and pinged the new VM on "vNET2".
+    13. Pinged successfuly between them.
 
 #### [Lab 15 Private Link - Private endpoint:](https://github.com/Nebulanomi/Azure_Networking_Labs/blob/master/01.%20Azure%20Networking%20Labs/Private%20Link%20-%20Private%20endpoint.md)
 
     1. Created a "standard" "LRS" storage account.
         Note: Left the rest as default.
 
-    3. Created a "Hub" vNET for the Private Endpoint to reside in (10.0.0.0/16) & a subnet for it (10.0.1.0/24).
-    2. Created a Private Endpoint:
+    2. Created a "Hub" vNET for the Private Endpoint to reside in (10.0.0.0/16) & a subnet for it (10.0.1.0/24).
+    3. Created a Private Endpoint:
 
         Name: "pe-sa1"; Network Interface Name: "pe-sa1-nic";
         Connection method: "Connect to an Azure resource in my directory"; Resource type: "Microsoft.Storage/storageAccounts"; Resource: "The name of the storage account"; Target sub-resource: "blob";
