@@ -104,7 +104,9 @@ Commands:
 	--access allow \
 	--priority 100
 ```
-4. Attached the NSG to the new Subnet.
+
+- Attached the NSG to the new Subnet.
+
 ```
 	Variable:
 	
@@ -119,7 +121,8 @@ Commands:
 		--network-security-group $NSG
 ```
 
-5. Created a VM.
+- Created a VM.
+
 ```
 	Variables:
 
@@ -140,7 +143,7 @@ Commands:
 		--admin-password $AdminPassword
 ```
 
-6. Listed the created subnet.
+- Listed the created subnet.
 
 ```
 	az network vnet subnet list \
@@ -153,23 +156,24 @@ Commands:
 
 #### [04. Virtual Network Peering:](https://github.com/binals/azurenetworking/blob/master/Lab%2004%20Virtual%20Network%20Peering.pdf)
 
-1. Checked connectivity between vNETs ("Hub" & "Vnet1").
-2. Copied the public IPs of the VMs in the "Hub" vNET & "Mgmt" subnet.
-3. Connected to the "Mgmt" VM with SSH.
-4. Pinged the private IP of the VM in the "Hub" vNET and verified that it didnt succeed.
-5. Created a Peer vNET in "Vnet1" (It automatically creates one on the remote vNET).
-6. Allowed access and traffic forwarding between vNETs.
-Note: Traffic forwarding only works if there is a Firewall or NVA on the Hub.
+- Checked connectivity between vNETs ("Hub" & "Vnet1").-
+- Copied the public IPs of the VMs in the "Hub" vNET & "Mgmt" subnet.
+- Connected to the "Mgmt" VM with SSH.
+- Pinged the private IP of the VM in the "Hub" vNET and verified that it didnt succeed.
+- Created a Peer vNET in "Vnet1" (It automatically creates one on the remote vNET).
+- Allowed access and traffic forwarding between vNETs.
+- Note: Traffic forwarding only works if there is a Firewall or NVA on the Hub.
 
-7. Verified the "Effective Routes" on the NIC of each VM for "Peered vNET".
-8. Accessed the "Mgmt" VM with its public IP and pinged the "Hub" VM's private IP.
-Note: The "AllowVnetInBound" is what allows communication between resources in connected vNETs.
-Note: If a new rule is created that disables that, we won't be able to ping.
+- Verified the "Effective Routes" on the NIC of each VM for "Peered vNET".
+- Accessed the "Mgmt" VM with its public IP and pinged the "Hub" VM's private IP.
+- Note: The "AllowVnetInBound" is what allows communication between resources in connected vNETs.
+- Note: If a new rule is created that disables that, we won't be able to ping.
 
 #### [05. Virtual Network Peering - Transitive behavior:](https://github.com/binals/azurenetworking/blob/master/Lab%2005%20Virtual%20Network%20Peering%20-%20Transitive%20behavior.pdf)
 
-1. Accessed the Azure CLI (Bash Shell).
-2. Created a new vNET & Subnet.
+- Accessed the Azure CLI (Bash Shell).
+- Created a new vNET & Subnet.
+
 ```
 Variables:
 
@@ -191,7 +195,8 @@ Command:
 	-l $Location
 ```
 
-3. Attached the old NSG to the new Subnet (Bash Shell).
+- Attached the old NSG to the new Subnet (Bash Shell).
+
 ```
 Variable:
 
@@ -205,7 +210,9 @@ Command:
 	--vnet-name $VnetName \
 	--network-security-group $NSG
 ```
-4. Created a new VM.
+
+- Created a new VM.
+
 ```
 Variables:
 
@@ -226,43 +233,43 @@ Command:
 	--admin-password $AdminPassword
 ```
 
-5. Removed the NSG created from the VMs creation.
-6. Peered the new "Vnet2" vNET with the "Hub" vNET.
-7. Allowed access and traffic forwarding between vNETs.
-8. Verified the "Effective Routes" on the NIC of the new VM for "Peered vNET".
-9. Altered the NSG to allow SSH to the new VMs public IP.
-10. Accessed the "Vnet2" VM with its public IP and pinged the "Hub" VM's private IP.
-11. Accessed the "Vnet2" VM with its public IP and verified that I couldn't ping the "Mgmt" VM's private IP.
-Note: It doesnt work because transitive peering is not allowed.
+- Removed the NSG created from the VMs creation.
+- Peered the new "Vnet2" vNET with the "Hub" vNET.
+- Allowed access and traffic forwarding between vNETs.
+- Verified the "Effective Routes" on the NIC of the new VM for "Peered vNET".
+- Altered the NSG to allow SSH to the new VMs public IP.
+- Accessed the "Vnet2" VM with its public IP and pinged the "Hub" VM's private IP.
+- Accessed the "Vnet2" VM with its public IP and verified that I couldn't ping the "Mgmt" VM's private IP.
+- Note: It doesnt work because transitive peering is not allowed.
 
 #### [06. NVA CSR1000v:](https://github.com/binals/azurenetworking/blob/master/Lab%2006%20NVA%20CSR1000v.pdf)
 
-1. Deployed a NVA (Metwork Virtual Appliance) to "Vnet1".
-Note: In this case I deployed the Cisco Cloud Services Router 1000V from the Azure Marketplace.
+- Deployed a NVA (Metwork Virtual Appliance) to "Vnet1".
+- Note: In this case I deployed the Cisco Cloud Services Router 1000V from the Azure Marketplace.
 
-2. Added it to a new Resource Group ("RG-Csr").
-3. Added 2 NICs to it, each one connected to each subnet in "Vnet1".
-4. Accessed the new Router VM with its public IP.
-Note: Since it is in "Vnet1-Subnet1", it receives its NSG.
-Note: It also created its own NSG (Csr1-SSH-SecurityGroup) which is attached to its 2 NICs.
+- Added it to a new Resource Group ("RG-Csr").
+- Added 2 NICs to it, each one connected to each subnet in "Vnet1".
+- Accessed the new Router VM with its public IP.
+- Note: Since it is in "Vnet1-Subnet1", it receives its NSG.
+- Note: It also created its own NSG (Csr1-SSH-SecurityGroup) which is attached to its 2 NICs.
 
 #### [07. Routing Tables:](https://github.com/binals/azurenetworking/blob/master/Lab%2007%20Routing%20Tables.pdf)
 
-1. Created a route table and added it to a new Resource Group.
-2. Created a route in it:
+- Created a route table and added it to a new Resource Group.
+- Created a route in it:
 
 ```
 Address prefix: "10.0.1.0/24"; Next hop type: "VirtualAppliance"; Next hop IP address: "10.1.1.5" (The Routers private IP address on "Vnet1-Subnet1").
 ```
 
-3. Associated the route table to subnet "Vnet1-Subnet2".
-4. Deleted the route tables created from the creation of the "Csr" VM.
-5. Enabled IP forwarding on the NVAs NIC attached to "Vnet1-Subnet2".
-6. Altered the NSG to allow ICMP to the new VM.
-Note: All of this forced the "Web" VM on "Vnet1-Subnet2" to route to "Csr1" when it wants to communicate with the IP range 10.0.1.0/24.
+- Associated the route table to subnet "Vnet1-Subnet2".
+- Deleted the route tables created from the creation of the "Csr" VM.
+- Enabled IP forwarding on the NVAs NIC attached to "Vnet1-Subnet2".
+- Altered the NSG to allow ICMP to the new VM.
+- Note: All of this forced the "Web" VM on "Vnet1-Subnet2" to route to "Csr1" when it wants to communicate with the IP range 10.0.1.0/24.
 
-7. Accessed the "Web" VM with its public IP and pinged the "Csr1" & "Hub" VM's private IPs.
-8. Did a traceroute from the "Web" VM to the "Hub" VM:
+- Accessed the "Web" VM with its public IP and pinged the "Csr1" & "Hub" VM's private IPs.
+- Did a traceroute from the "Web" VM to the "Hub" VM:
 
 ```
 1  csr1.internal.cloudapp.net (10.1.1.5)  3.487 ms  3.458 ms  3.447 ms
@@ -271,7 +278,7 @@ Note: All of this forced the "Web" VM on "Vnet1-Subnet2" to route to "Csr1" when
 
 #### [08. Site-to-site VPN:](https://github.com/binals/azurenetworking/blob/master/Lab%2008%20Site-to-site%20VPN.pdf)
 
-1. Created the "OnPrem" vNET:
+- Created the "OnPrem" vNET:
 
 ```
 Variables:
@@ -294,27 +301,28 @@ Command:
 	-l $Location
 ```
 
-2. Created a Gateway Subnet in the "Hub" (10.0.254.0/27) & "OnPrem" vNET (10.128.254.0/27).
-Note: A VPN GW needs to be deployed in a specific subnet named "GatewaySubnet".
+- Created a Gateway Subnet in the "Hub" (10.0.254.0/27) & "OnPrem" vNET (10.128.254.0/27).
+- Note: A VPN GW needs to be deployed in a specific subnet named "GatewaySubnet".
 
-3. Created a "Gen1" "Route-based" VNG (Virtual Network Gateway) in the "Hub" & "OnPrem" vNET.
-Note: Active-Active mode is "disabled" & BGP is "enabled" with ASN as "65002".
+- Created a "Gen1" "Route-based" VNG (Virtual Network Gateway) in the "Hub" & "OnPrem" vNET.
+- Note: Active-Active mode is "disabled" & BGP is "enabled" with ASN as "65002".
 
-4. Created a LNG (Local Network Gateway) with the "On-prem" address space & the details of the "OnPrem" VNG.
-Note: LNG refers to the details of the local VNG including its IP address, BGP AASN & peering IP.
-Note Address space refers to the local address range that we want to be reachable from the other VNG.
+- Created a LNG (Local Network Gateway) with the "On-prem" address space & the details of the "OnPrem" VNG.
+- Note: LNG refers to the details of the local VNG including its IP address, BGP AASN & peering IP.
+- Note Address space refers to the local address range that we want to be reachable from the other VNG.
 
-5. Created an LNG with the "Hub" address space & the details of the "Hub" VNG.
-6. Added a VPN connection on the "Hub" GW:
+- Created an LNG with the "Hub" address space & the details of the "Hub" VNG.
+- Added a VPN connection on the "Hub" GW:
 
 ```
 Connection type: "Site-to-Site (IPsec)"; VNG: "Hub GW"; LNG: "OnPrem GW"; Shared key: "A secret key"; IKE protocol: "IKEv2"; 
 ```
 
-7. Added a VPN connection on the "OnPrem" GW but with the "Onprem" VNG & the "Hub" LNG.
-8. A site to Site VPN is created between the "Hub" vNET & "Onprem" vNET.
-9. Verified that the connections are in the "Connected" status.
-10. Created a VM on the "OnPrem" vNET with Azure CLI (Bash Shell).
+- Added a VPN connection on the "OnPrem" GW but with the "Onprem" VNG & the "Hub" LNG.
+- A site to Site VPN is created between the "Hub" vNET & "Onprem" vNET.
+- Verified that the connections are in the "Connected" status.
+- Created a VM on the "OnPrem" vNET with Azure CLI (Bash Shell).
+
 ```
 Variables:
 
@@ -337,56 +345,59 @@ Command:
 	--admin-password $AdminPassword
 ```
 
-11. Verified the VPN connections by accessing the "OnPrem" VM and connecting it to the VM on the "Hub" vNET.
-12. Added a new prefix on the "Hub" LNG with a range that captures the "Vnet1" VMs private IP (10.1.0.0/16).
-13. Connected to the "OnPrem" VM with its public IP and pinged the private IP address of the "Hub" & "Mgmt" VM.
-14. Verified that only the "Hub" VM was reachable.
-15. Enabled "Allow Gateway Transit" on the "Hub" vNET peering with the "Vnet1" vNET.
-16. Enabled "Use Remote Gateways" on the "Vnet1" vNET peering with the "Hub" vNET.
-17. Verified that both VMs were now reachable.
+- Verified the VPN connections by accessing the "OnPrem" VM and connecting it to the VM on the "Hub" vNET.
+- Added a new prefix on the "Hub" LNG with a range that captures the "Vnet1" VMs private IP (10.1.0.0/16).
+- Connected to the "OnPrem" VM with its public IP and pinged the private IP address of the "Hub" & "Mgmt" VM.
+- Verified that only the "Hub" VM was reachable.
+- Enabled "Allow Gateway Transit" on the "Hub" vNET peering with the "Vnet1" vNET.
+- Enabled "Use Remote Gateways" on the "Vnet1" vNET peering with the "Hub" vNET.
+- Verified that both VMs were now reachable.
 
 #### [09. Virtual WAN:](https://github.com/binals/azurenetworking/blob/master/Lab%2009%20Virtual%20WAN.pdf)
 
-1. A "standard" virtual WAN service is created in a new Resource Group.
-2. In it I created a virtual Hub (vnet) is created with the following information:
-1. Basic: The lowest "Virtual Hub Capacity" (Which is 2 Units) and with a private address of 10.64.0.0/16.
-2. Site-to-Site: Enabled and "Gateway scale units" to 1 scale.
-	Note: Two instances are deployed when a VPN gateway is provisioned in a virtual Hub. The Aggregate capacity is the bandiwdth of both put together.
+- A "standard" virtual WAN service is created in a new Resource Group.
+- In it I created a virtual Hub (vnet) is created with the following information.
+- Basic: The lowest "Virtual Hub Capacity" (Which is 2 Units) and with a private address of 10.64.0.0/16.
+- Site-to-Site: Enabled and "Gateway scale units" to 1 scale.
+- Note: Two instances are deployed when a VPN gateway is provisioned in a virtual Hub. The Aggregate capacity is the bandiwdth of both put together.
 
-3. Created a "VPN site" on the virtual WAN that corresponds to the "OnPrem vNETs VNG":
+- Created a "VPN site" on the virtual WAN that corresponds to the "OnPrem vNETs VNG":
+
 ```
 	Device vendor: "MSN"; Link speed: "50"; Link provider name: "MSN", Link IP address: "OnPrem NVGs Public IP"; Link BGP address: "OnPrem NVGs BGP address"; link ASN: "OnPrem NVGs ASN".
 ```
 
-4. Verified that the "VPN site" has Hub with status "Connection Needed" because it hasnt been connected to the "Hub" that was created earlier.
-5. Accessed the "Hub" VPN GW and connected the "VPN site" that was created:
+- Verified that the "VPN site" has Hub with status "Connection Needed" because it hasnt been connected to the "Hub" that was created earlier.
+- Accessed the "Hub" VPN GW and connected the "VPN site" that was created:
+
 ```
 PSK: "Secret key"; Protocol: "IPsec"; IPsec: "Default";
 ```
 
-6. Verified that the Connection Provisioning status equals "Succeeded" & Connectivity status equals "Not Connected".
-7. Downloaded the "VPN config" on the "Hub" router which contains information of the "vWAM" and the "OnPrem VPN site".
-Note: It creates a storage account in a new resource group.
+- Verified that the Connection Provisioning status equals "Succeeded" & Connectivity status equals "Not Connected".
+- Downloaded the "VPN config" on the "Hub" router which contains information of the "vWAM" and the "OnPrem VPN site".
+- Note: It creates a storage account in a new resource group.
 
-8. Created a LNG of the "Hub" vNET with information from the downloaded file:
+- Created a LNG of the "Hub" vNET with information from the downloaded file:
+
 ```
 IP address: "The vWANs Public IP"; Address space: "10.64.0.0/16"; BGP: "Enabled"; ASN: "65515"; BGP Peer ID address: "The vWANs BGP peer IP".
 ```
 
-9. Added a new "Site-to-Site" Connection with the "OnPrem" VNG and the LNG of the "Hub" vWAN.
-Note: PSK & IKE Protocol must be the same & BGP peer enabled.
+- Added a new "Site-to-Site" Connection with the "OnPrem" VNG and the LNG of the "Hub" vWAN.
+- Note: PSK & IKE Protocol must be the same & BGP peer enabled.
 
-10. Verified that the status of the connection changed to "Connected" on both sides.
-11. Deleted everything related to the "Hub" GW and its connections to the "Vnet1" vNET from the previous lab.
-12. Created a connection between the "vWAN Hub" and "Vnet1" in "Virtual Network Connections" with everything as default.
-13. Verified that the connection is "Succeeded".
-14. Verified that the "topology" of the vWAN is correct.
-15. Verified the "Hub" status as "Succeeded" & shows "1 VPN site connected".
-16. Verified that the "VPN site" has "Site Provisioning Status" as "Provisioned".
-17. Verified that pinging from the "On-Prem" VM to the private IP of the "Mgmt" Vm was successful.
-18. Created a new "Branch2" vnet with IP range 10.129.0.0/16 and subnet 10.129.1.0/24.
-19. Created a "Gateway subnet" with IP range 10.129.0.0/24.
-20. Created a VPN GW:
+- Verified that the status of the connection changed to "Connected" on both sides.
+- Deleted everything related to the "Hub" GW and its connections to the "Vnet1" vNET from the previous lab.
+- Created a connection between the "vWAN Hub" and "Vnet1" in "Virtual Network Connections" with everything as default.
+- Verified that the connection is "Succeeded".
+- Verified that the "topology" of the vWAN is correct.
+- Verified the "Hub" status as "Succeeded" & shows "1 VPN site connected".
+- Verified that the "VPN site" has "Site Provisioning Status" as "Provisioned".
+- Verified that pinging from the "On-Prem" VM to the private IP of the "Mgmt" Vm was successful.
+- Created a new "Branch2" vnet with IP range 10.129.0.0/16 and subnet 10.129.1.0/24.
+- Created a "Gateway subnet" with IP range 10.129.0.0/24.
+- Created a VPN GW:
 
 ```
 Gateway type: "VPN"; VPN type: "Route-based"; SKU: "VpnGW1"; Generation: "Generation1"; virtual network: "Branch2";
@@ -396,28 +407,34 @@ Configure BGP: "Enabled";
 ASN: "65003";
 ```
 
-21. Added a new virtual WAN "Hub2" Hub in another region with IP range 10.65.0.0/16.
-22. Created a new VPN GW in in the new Hub.
-23. Created a new "VPN Site":
+- Added a new virtual WAN "Hub2" Hub in another region with IP range 10.65.0.0/16.
+- Created a new VPN GW in in the new Hub.
+- Created a new "VPN Site":
+
 ```
 Device vendor: "MSN"; Link speed: "50"; Link provider name: "MSN", Link IP address: "Branch NVGs Public IP"; Link BGP address: "Branch NVGs BGP address"; link ASN: "Branch NVGs ASN".
 ```
 
-24. Connected the VPN site to the new Hub:
+- Connected the VPN site to the new Hub:
+
 ```
 PSK: "Secret key"; Protocol: "IPsec"; IPsec: "Default";
 ```
-25. Downloaded the configuration and added the necessary information to a new "Local Network Gateway":
+
+- Downloaded the configuration and added the necessary information to a new "Local Network Gateway":
+
 ```
 IP address: "The vWANs Public IP"; Address Space: "10.65.0.0/16" BGP: "Enabled"; ASN: "65515"; BGP Peer ID address: "The vWANs BGP peer IP".
 ```
-26. Configured a Site-to-Site connection on the Branch2 VPN GW with the LNG to the new Hub.
-27. Verified that connection was established.
-28. Created a VM in the Branch2 vnet and successfuly pinged the VM on the vnet and onprem.
+
+- Configured a Site-to-Site connection on the Branch2 VPN GW with the LNG to the new Hub.
+- Verified that connection was established.
+- Created a VM in the Branch2 vnet and successfuly pinged the VM on the vnet and onprem.
 
 #### [10. Standard Load Balancer:](https://github.com/binals/azurenetworking/blob/master/Lab%2010%20Standard%20Load%20Balancer.pdf)
 
-1. A "Web2" VM was created in the same location as "Web1" and with the same "web" ASG in Azure CLI (Baash Shell).
+- A "Web2" VM was created in the same location as "Web1" and with the same "web" ASG in Azure CLI (Baash Shell).
+
 ```
 Variables:
 
@@ -441,26 +458,31 @@ Command:
 	--admin-username $Admin \
 	--admin-password $Password
 ```
-2. Connected to the "Mgmt" VM with its public IP and accessed the "Web1" VM.
-3. Elevated to root and installed apache and wrote HTML text to the index.html file:
+
+- Connected to the "Mgmt" VM with its public IP and accessed the "Web1" VM.
+- Elevated to root and installed apache and wrote HTML text to the index.html file:
+
 ```
 echo '<!doctype html><html><body><h1>Web Server 1</h1></body></html>' | tee /var/www/html/index.html
 ```
-4. Connected to the "Web2" VM with its private IP and did the same as "Web1":
+
+- Connected to the "Web2" VM with its private IP and did the same as "Web1":
+
 ```
 echo '<!doctype html><html><body><h1>Web Server 2</h1></body></html>' | tee /var/www/html/index.html
 ```
-5. A "standard" LB (Load Balancer) is configured on vNET "Vnet1".
-Note: It is a Layer 4 LB (Balances TCP & UDP traffic).
 
-6. Public IP address was created for the Frontend.
-7. A backend pool was added with both "Web" VMs.
-Note: The backend for the LB includes the 2 Web VMs on the vNET "Vnet1".
+- A "standard" LB (Load Balancer) is configured on vNET "Vnet1".
+- Note: It is a Layer 4 LB (Balances TCP & UDP traffic).
+  
+- Public IP address was created for the Frontend.
+- A backend pool was added with both "Web" VMs.
+- Note: The backend for the LB includes the 2 Web VMs on the vNET "Vnet1".
 
-8. A Load Balancing Rule was added and is connected to the Frontend IP and Backend pool.
-Note: In it a health probe was added to monitor the status of port "80" and protocol "HTTP".
+- A Load Balancing Rule was added and is connected to the Frontend IP and Backend pool.
+- Note: In it a health probe was added to monitor the status of port "80" and protocol "HTTP".
 
-9. Verified that "Web1" appears when connecting to the LBs public IP & "Web2" after shutting down "Web1" VM.
+- Verified that "Web1" appears when connecting to the LBs public IP & "Web2" after shutting down "Web1" VM.
 
 #### [11. Network Watcher NSG Flow Logs:](https://github.com/binals/azurenetworking/blob/master/Lab%2011%20Network%20Watcher%20NSG%20Flow%20Logs.pdf)
 
