@@ -486,30 +486,34 @@ echo '<!doctype html><html><body><h1>Web Server 2</h1></body></html>' | tee /var
 
 #### [11. Network Watcher NSG Flow Logs:](https://github.com/binals/azurenetworking/blob/master/Lab%2011%20Network%20Watcher%20NSG%20Flow%20Logs.pdf)
 
-1. Accessed Network Watcher in the search box and verified that there was one from the previous exercises.
-Note: Network Watcher is created in its own Resource Group "NetworkWatcherRG" when a vNET is created and therefore it is also registered in the subscription by default.
+- Accessed Network Watcher in the search box and verified that there was one from the previous exercises.
+- Note: Network Watcher is created in its own Resource Group "NetworkWatcherRG" when a vNET is created and therefore it is also registered in the subscription by default.
 
-2. Created a "Standard" Azure Storage account.
-Note: NSG flow log needs it to write data.
+- Created a "Standard" Azure Storage account.
+- Note: NSG flow log needs it to write data.
 
-3. Created a new "Log Analytics Workspace".
-4. Accessed Network Watcher and created a "NSG flow log" for "NSG1":
+- Created a new "Log Analytics Workspace".
+- Accessed Network Watcher and created a "NSG flow log" for "NSG1":
 
+```
 Resource: NSG1; Storage Account: "The one created earlier"; Retention: "2"; Flow Logs Version: 1;
 Traffic Analytics: "Enabled"; Traffic Analytics processing interval: "Every 10 mins"; Log Analytics Workspace: "The one created earlier".
+```
 
-Note: Version 1 logs ingress and egress IP traffic flows for both allowed and denied traffic.
-Note: Traffic Analytics provides rich analytics and visualization derived from flow logs.
+- Note: Version 1 logs ingress and egress IP traffic flows for both allowed and denied traffic.
+- Note: Traffic Analytics provides rich analytics and visualization derived from flow logs.
 
-5. Accessed Network Watcher and created a "NSG flow log" for "NSG-Hub".
-Note: Configured with the same information as as "NSG1" but with the different Resource.
+- Accessed Network Watcher and created a "NSG flow log" for "NSG-Hub".
+- Note: Configured with the same information as as "NSG1" but with the different Resource.
 
-6. Accessed the "NSG flow logs" in Network Watcher.
-7. Clicked on the "Storage Account" connected to both.
-8. Went to "Containers" and accessed the "networksecuritygroupflowevent" container.
-9. Navigated through the hierarchy until the "PT1H.json" file is found.
-Note (Naming convention):
-```     
+- Accessed the "NSG flow logs" in Network Watcher.
+- Clicked on the "Storage Account" connected to both.
+- Went to "Containers" and accessed the "networksecuritygroupflowevent" container.
+- Navigated through the hierarchy until the "PT1H.json" file is found.
+
+- Note (Naming convention):
+
+```
 	https://{storageAccountName}.blob.core.windows.net /  
 	insights-logs-networksecuritygroupflowevent / 
 	resourceId= / SUBSCRIPTIONS / {SubscriptionID} / 
@@ -520,10 +524,12 @@ Note (Naming convention):
 	macAddress={MACAddress} /
 	PT1H.json
 ```
-10. Downloaded the file and verified the "flow log" in it.
-Note: The MAC addresses shown are VM NICs.
 
-Example of a flowTuples information:
+- Downloaded the file and verified the "flow log" in it.
+- Note: The MAC addresses shown are VM NICs.
+
+- Example of a flowTuples information:
+
 ```
 	1542110377: The time stamp of when the flow occurred, in UNIX EPOCH format.
 		Note: This converts to May 1, 2018 at 2:59:05 PM GMT. 
@@ -548,49 +554,59 @@ Example of a flowTuples information:
 	16978 Bytes sent: The total number of TCP or UDP packet bytes sent from source to destination since last update (Or vice-versa).
 		Note: Packet bytes include the packet header and payload.
 ```
+
 #### [12. Firewall:](https://github.com/binals/azurenetworking/blob/master/Lab%2012%20Firewall.pdf)
 
-1. Created a subnet for the Firewall in "vnet-hub" (10.0.251.0/24).
-	Note: Azure Firewall requires a dedicated subnet called "AzureFirewallSubnet".
+- Created a subnet for the Firewall in "vnet-hub" (10.0.251.0/24).
+- Note: Azure Firewall requires a dedicated subnet called "AzureFirewallSubnet".
 
-2. Accessed "Firewalls" in the search box and created one:
+- Accessed "Firewalls" in the search box and created one:
+
 ```
 Resource group: "The same as the virtual network";
 Firewall SKU: "Standard"; Firewall SKU: "Premium";
 Virtual Network: "Vnet-Hub"; Public IP: "A new one with Standard SKU".
 ```
-3. Created an application rule in the Firewall in "Application rule collection" (Layer 7):
-Note: that allows outbound access to "www.microsoft.com".
+
+- Created an application rule in the Firewall in "Application rule collection" (Layer 7):
+- Note: that allows outbound access to "www.microsoft.com".
+
 ```
 Priority: "200"; Action: "Allow"; Target FQDN source: 10.1.2.0/24;
 Protocol:Port: "http, https"; Target FQDN: "www.microsoft.com".
 ```
-4. Created a route table in the same region as the Firewall.
-5. Created a custom route:
+
+- Created a route table in the same region as the Firewall.
+- Created a custom route:
+
 ```
 Destination type: "IP Addresses"; Destination IP addresses: "0.0.0.0/0";
 Next hop type: "Virtual appliance"; Next hop address: "The Firewalls private IP address".
 ```
-6. Associated the custom route to the spoke "Vnet1" vNET & subnet "Vnet1-Subnet2".
-7. Accessed the "Mgmt" VM through the "Serial Console" and verified that "curl www.microsoft.com" was working.
-8. Did "curl www.google.com" and it didnt work, giving a firewall error.
-Note: Verified that the vNETs are still peered to each other and that "Vnet1" isnt using "Remote GW".
+
+- Associated the custom route to the spoke "Vnet1" vNET & subnet "Vnet1-Subnet2".
+- Accessed the "Mgmt" VM through the "Serial Console" and verified that "curl www.microsoft.com" was working.
+- Did "curl www.google.com" and it didnt work, giving a firewall error.
+- Note: Verified that the vNETs are still peered to each other and that "Vnet1" isnt using "Remote GW".
 
 #### [13. Firewall-Inbound NAT:](https://github.com/binals/azurenetworking/blob/master/Lab%2013%20Firewall%20-%20Inbound%20NAT.pdf)
 
-1. Accessed the Firewall and added a "NAT rule collection" to allow SSH thorugh the Firewall to the "Mgmt" VM:
+- Accessed the Firewall and added a "NAT rule collection" to allow SSH thorugh the Firewall to the "Mgmt" VM:
+
 ```
 Name: "InboundNAT"; Priority: "200";
 Rules:Name: "NatRule1"; Rules:Protocol: "TCP";
 Rules:Source Addresses: *; Rules:Destination Addresses: "Firewalls public IP";
 Rules:Destination ports: "8022"; Translated Address: "Mgmt VMs private IP"; Rules:Translated port: "22".
 ```
-2. Verified that SSH was possible with the Firewalls public IP and port "8022".
+
+- Verified that SSH was possible with the Firewalls public IP and port "8022".
 
 #### [14. Firewall - Spoke to spoke communication:](https://github.com/binals/azurenetworking/blob/master/Lab%2014%20Firewall%20-%20Spoke%20to%20spoke%20communication.pdf)
 
-1. Deleted the previous "vNET2" and everything in it.
-2. Created "vNET2" again with Azure CLI (Bash Shell).
+- Deleted the previous "vNET2" and everything in it.
+- Created "vNET2" again with Azure CLI (Bash Shell).
+
 ```
 Variables:
 
@@ -611,13 +627,17 @@ Command:
 	--subnet-prefix $SubnetPrefix \
 	-l $Location
 ```
-3. Verified that "vNET2" was created:
+
+- Verified that "vNET2" was created:
+
 ```
 az network vnet list -o table
 ```
+
 ![plot](./04.%20Images/image2.png)
 
-4. Peered "vNET2" with the "Hub" vNET:
+- Peered "vNET2" with the "Hub" vNET:
+
 ```
 Variables:
 
@@ -636,7 +656,9 @@ Command:
 	--allow-forwarded-traffic \
 	--allow-vnet-access
 ```
-5. Peered the "Hub" vNET with "vNET2":
+
+- Peered the "Hub" vNET with "vNET2":
+
 ```
 Variables:
 
@@ -655,7 +677,9 @@ Command:
 	--allow-forwarded-traffic \
 	--allow-vnet-access
 ```
-6. Made "Allow Forwarded traffic" enabled for "vNET1" peering:
+
+- Made "Allow Forwarded traffic" enabled for "vNET1" peering:
+
 ```
 Variables:
 
@@ -684,7 +708,9 @@ Command:
 	--vnet-name $VnetName \
 	--set allowForwardedTraffic=true
 ```
-7. Verified peering status between "vNET2" & the "Hub" vnet:
+
+- Verified peering status between "vNET2" & the "Hub" vnet:
+
 ```
 Variables:
 
@@ -712,7 +738,8 @@ Command:
 ```
 ![plot](./04.%20Images/image3.png)
 
-8. Added a NSG to "vNET2".
+- Added a NSG to "vNET2".
+
 ```
 Variables:
 
@@ -729,7 +756,9 @@ Command:
 	--vnet-name $VnetName \
 	--network-security-group $Nsg 
 ```
-9. Added a VM to "vNET2".
+
+- Added a VM to "vNET2".
+
 ```
 Variables:
 
@@ -752,37 +781,42 @@ Command:
 	--admin-password $AdminPassword \
 	--nsg "" 
 ```
-10. Associated the route table from "vNET1-subnet1" with "vNET2-subnet1".
-Note: This will allow both of them to have a default route to the Firewall.
 
-11. Added a "Network Rule Collection" to the firewall to allow ICMP traffic between the vNETs:
+- Associated the route table from "vNET1-subnet1" with "vNET2-subnet1".
+- Note: This will allow both of them to have a default route to the Firewall.
+
+- Added a "Network Rule Collection" to the firewall to allow ICMP traffic between the vNETs:
+
 ```
 Name: "Allow-ICMP"; Priority: "200"; Action: "Allow";
 IP Addresses:Name: "Allow-ICMP"; Protocol: "ICMP"; Source Addresses: "10.0.0.0/8";
 Destination addresses: "10.0.0.0/8"; Destination Ports: "*".
 ```
-12. Accessed the "Mgmt" VM and pinged the new VM on "vNET2".
-13. Pinged successfuly between them.
+
+- Accessed the "Mgmt" VM and pinged the new VM on "vNET2".
+- Pinged successfuly between them.
 
 #### [Lab 15 Private Link - Private endpoint:](https://github.com/Nebulanomi/Azure_Networking_Labs/blob/master/01.%20Azure%20Networking%20Labs/Private%20Link%20-%20Private%20endpoint.md)
 
-1. Created a "standard" "LRS" storage account.
-Note: Left the rest as default.
+- Created a "standard" "LRS" storage account.
+- Note: Left the rest as default.
 
-2. Created a "Hub" vNET for the Private Endpoint to reside in (10.0.0.0/16) & a subnet for it (10.0.1.0/24).
-3. Created a Private Endpoint:
+- Created a "Hub" vNET for the Private Endpoint to reside in (10.0.0.0/16) & a subnet for it (10.0.1.0/24).
+- Created a Private Endpoint:
+
 ```
 Name: "pe-sa1"; Network Interface Name: "pe-sa1-nic";
 Connection method: "Connect to an Azure resource in my directory"; Resource type: "Microsoft.Storage/storageAccounts"; Resource: "The name of the storage account"; Target sub-resource: "blob";
 Virtual network: "The Hub vNET"; Subnet: "The Hub Subnet";
 Integrate with private DNS zone: "Yes"; Resource group: "Our resource group";
 ```
-4. Accessed the Private Endpoint and verified that it had a NIC associated to it in the "DNS configuration".
-Note: I also verified that the private IP address is associated to the FQDN of the storage account.
 
-5. Accessed the Private DNS zone & verified that the "Hub" vNET was linked with the Private DNS Zone.
-6. Created a VM in the same subnet without a "Public IP" & accessed it through the "Serial Console".
-7. Verified that the Private Endpoints IP address appeared after doing an "nslookup" with the Storage Accounts FQDN.
-Note: This shows that the VM was forced to go to the Private Endpoint to reach the Storage Account.
+- Accessed the Private Endpoint and verified that it had a NIC associated to it in the "DNS configuration".
+- Note: I also verified that the private IP address is associated to the FQDN of the storage account.
 
-8. Verified that by doing the same on my local computer that it went directly to the Storage Accounts public IP.
+- Accessed the Private DNS zone & verified that the "Hub" vNET was linked with the Private DNS Zone.
+- Created a VM in the same subnet without a "Public IP" & accessed it through the "Serial Console".
+- Verified that the Private Endpoints IP address appeared after doing an "nslookup" with the Storage Accounts FQDN.
+- Note: This shows that the VM was forced to go to the Private Endpoint to reach the Storage Account.
+
+- Verified that by doing the same on my local computer that it went directly to the Storage Accounts public IP.
